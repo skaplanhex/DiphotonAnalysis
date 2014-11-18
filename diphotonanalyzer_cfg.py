@@ -1,0 +1,72 @@
+from FWCore.ParameterSet.VarParsing import VarParsing
+
+options = VarParsing ('python')
+
+options.register('infilename',
+                 "DUMMY",
+                 VarParsing.multiplicity.singleton,
+                 VarParsing.varType.string,
+                 "input file name"
+)
+
+options.register('outfilename',
+                 "plots.root",
+                 VarParsing.multiplicity.singleton,
+                 VarParsing.varType.string,
+                 "output file name"
+)
+
+## 'maxEvents' is already registered by the Framework, changing default value
+options.setDefault('maxEvents', -1)
+
+options.parseArguments()
+
+import FWCore.ParameterSet.Config as cms
+
+process = cms.Process("USER")
+
+process.load("FWCore.MessageService.MessageLogger_cfi")
+
+#how many events to process.  -1 means all of them
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(options.maxEvents) )
+
+if (options.infilename != "DUMMY"):
+  process.source = cms.Source("PoolSource",
+    fileNames = cms.untracked.vstring(
+      # 'file:/uscms_data/d3/skaplan/diphotons/CMSSW_7_1_1/src/%s'%(options.infilename)
+      '/store/user/skaplan/noreplica/diphoton/%s'%(options.infilename)
+    )
+
+
+
+  )
+else:
+  process.source = cms.Source("PoolSource",
+      # replace 'myfile.root' with the source file you want to use
+      fileNames = cms.untracked.vstring(
+         # 'file:/uscms_data/d3/skaplan/diphotons/CMSSW_7_1_1/src/ADD_M-1200_13TeV_N4_MD2000.root'
+         'file:/uscms_data/d3/skaplan/diphotons/CMSSW_7_1_1/src/ADD_M-1200_13TeV_N2_MD2000_RUN2.root'
+         # '/store/mc/Summer12_DR53X/RSGravitonToGG_kMpl01_M_1000_Tune4C_8TeV_pythia8_cff/AODSIM/PU_S10_START53_V19-v1/20000/3A864739-9D0A-E311-A554-002590A80DF0.root',
+         # '/store/mc/Summer12_DR53X/RSGravitonToGG_kMpl01_M_1000_Tune4C_8TeV_pythia8_cff/AODSIM/PU_S10_START53_V19-v1/20000/3CD38A6B-C30B-E311-A996-002590A37122.root',
+         # '/store/mc/Summer12_DR53X/RSGravitonToGG_kMpl01_M_1000_Tune4C_8TeV_pythia8_cff/AODSIM/PU_S10_START53_V19-v1/20000/4495277D-500B-E311-A29B-001E6739811F.root',
+         # '/store/mc/Summer12_DR53X/RSGravitonToGG_kMpl01_M_1000_Tune4C_8TeV_pythia8_cff/AODSIM/PU_S10_START53_V19-v1/20000/5C65E29A-9F0A-E311-B205-002590A8882A.root'
+         # '/store/mc/Summer12_DR53X/VBF_HToGG_M-120_8TeV-powheg-pythia6/AODSIM/PU_S10_START53_V7A-v1/0000/7813CDA6-77FA-E111-9141-002618943974.root',
+         # '/store/mc/Summer12_DR53X/VBF_HToGG_M-120_8TeV-powheg-pythia6/AODSIM/PU_S10_START53_V7A-v1/0000/8CACA74D-7BFA-E111-9F30-0030486792A8.root',
+         # '/store/mc/Summer12_DR53X/VBF_HToGG_M-120_8TeV-powheg-pythia6/AODSIM/PU_S10_START53_V7A-v1/0000/A6CC388D-93FA-E111-A168-0018F3D09688.root',
+         # '/store/mc/Summer12_DR53X/VBF_HToGG_M-120_8TeV-powheg-pythia6/AODSIM/PU_S10_START53_V7A-v1/0000/B67396FE-76FA-E111-8487-002618943811.root',
+         # '/store/mc/Summer12_DR53X/VBF_HToGG_M-120_8TeV-powheg-pythia6/AODSIM/PU_S10_START53_V7A-v1/0000/BC8A8AF2-76FA-E111-A24C-00261894390B.root',
+      )
+  )
+
+#this lets cmsRun know we want TFile output (histograms, TGraphs, etc.)
+process.TFileService = cms.Service("TFileService",
+      fileName = cms.string(options.outfilename)
+)
+#add the example analyzer to the process object
+process.analyze = cms.EDAnalyzer('DiphotonAnalyzer',
+	#particles is a variable representing an InputTag (a descriptor of a certain object in the event, in this case, the genParticles).  The InputTag desired can be found by doing an edmDumpEventContent on one of the files in the dataset to see all the objects in the event.  Then, choose whatever you want to use.
+	particles = cms.InputTag("genParticles")
+)
+
+#the path tells cmsRun which modules to be run in which order. In our case, we just need to run the analyzer
+process.p = cms.Path(process.analyze)
