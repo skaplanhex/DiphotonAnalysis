@@ -45,10 +45,10 @@
 // class declaration
 //
 
-class ExampleAnalyzer : public edm::EDAnalyzer {
+class DiphotonAnalyzer : public edm::EDAnalyzer {
    public:
-      explicit ExampleAnalyzer(const edm::ParameterSet&);
-      ~ExampleAnalyzer();
+      explicit DiphotonAnalyzer(const edm::ParameterSet&);
+      ~DiphotonAnalyzer();
 
       static void fillDescriptions(edm::ConfigurationDescriptions& descriptions);
 
@@ -93,7 +93,7 @@ class ExampleAnalyzer : public edm::EDAnalyzer {
 //
 // constructors and destructor
 //
-ExampleAnalyzer::ExampleAnalyzer(const edm::ParameterSet& iConfig)
+DiphotonAnalyzer::DiphotonAnalyzer(const edm::ParameterSet& iConfig)
 
 {
   //This line looks at the paramater set that is passed to the analyzer via the config file.  The particles_ object will represent whatever is passed to the particles variable in the config file (in our case, the genParticles).
@@ -102,7 +102,7 @@ ExampleAnalyzer::ExampleAnalyzer(const edm::ParameterSet& iConfig)
 }
 
 
-ExampleAnalyzer::~ExampleAnalyzer()
+DiphotonAnalyzer::~DiphotonAnalyzer()
 {
  
    // do anything here that needs to be done at desctruction time
@@ -117,7 +117,7 @@ ExampleAnalyzer::~ExampleAnalyzer()
 
 // ------------ method called for each event  ------------
 void
-ExampleAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
+DiphotonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
     using namespace edm;
     using namespace std;
@@ -225,7 +225,7 @@ ExampleAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 
 // ------------ method called once each job just before starting event loop  ------------
 void 
-ExampleAnalyzer::beginJob()
+DiphotonAnalyzer::beginJob()
 {
     hNumPhotons = fs->make<TH1D>("hNumPhotons","Photon Multiplicity (|#eta|<1.4442)",11,-0.5,10.5);
     hggMass = fs->make<TH1D>("hggMass","",172,0,8600.);
@@ -240,7 +240,7 @@ ExampleAnalyzer::beginJob()
 
 // ------------ method called once each job just after ending the event loop  ------------
 void 
-ExampleAnalyzer::endJob() 
+DiphotonAnalyzer::endJob() 
 {
   hggMass->GetXaxis()->SetTitle("M_{#gamma#gamma} (GeV/c^{2})");
   std::cout << "Largest diphoton invariant mass: " << maxMass << std::endl;
@@ -248,31 +248,31 @@ ExampleAnalyzer::endJob()
 
 // ------------ method called when starting to processes a run  ------------
 void 
-ExampleAnalyzer::beginRun(edm::Run const&, edm::EventSetup const&)
+DiphotonAnalyzer::beginRun(edm::Run const&, edm::EventSetup const&)
 {
 }
 
 // ------------ method called when ending the processing of a run  ------------
 void 
-ExampleAnalyzer::endRun(edm::Run const&, edm::EventSetup const&)
+DiphotonAnalyzer::endRun(edm::Run const&, edm::EventSetup const&)
 {
 }
 
 // ------------ method called when starting to processes a luminosity block  ------------
 void 
-ExampleAnalyzer::beginLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&)
+DiphotonAnalyzer::beginLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&)
 {
 }
 
 // ------------ method called when ending the processing of a luminosity block  ------------
 void 
-ExampleAnalyzer::endLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&)
+DiphotonAnalyzer::endLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&)
 {
 }
 
 // ------------ method fills 'descriptions' with the allowed parameters for the module  ------------
 void
-ExampleAnalyzer::fillDescriptions(edm::ConfigurationDescriptions& descriptions) {
+DiphotonAnalyzer::fillDescriptions(edm::ConfigurationDescriptions& descriptions) {
   //The following says we do not know what parameters are allowed so do no validation
   // Please change this to state exactly what you do use, even if it is no parameters
   edm::ParameterSetDescription desc;
@@ -281,4 +281,4 @@ ExampleAnalyzer::fillDescriptions(edm::ConfigurationDescriptions& descriptions) 
 }
 
 //define this as a plug-in
-DEFINE_FWK_MODULE(ExampleAnalyzer);
+DEFINE_FWK_MODULE(DiphotonAnalyzer);
