@@ -4,10 +4,16 @@ from ROOT import *
 print "done."
 
 xsbkg=3.697e-10
-xssigplusbkg=1.977e-09
+f = open('xsections_lambdaTstudy.txt','r')
+xsdict={}
+for line in f:
+    s = line.split()
+    xsdict[ int( s[0] ) ]= float( s[1] )
+f.close()
+xssigplusbkg=xsdict[5000]
 xssig = xssigplusbkg-xsbkg
 
-freg = TFile("plots_N2_MD2000_RUN2.root","READ")
+freg = TFile("plots_LambdaTstudy_LambdaT5000.root","READ")
 finf = TFile("plots_N2_MD2000_LambdaT100K_2.root","READ")
 
 hreg = freg.Get("analyze/hggMass")

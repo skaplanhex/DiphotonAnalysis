@@ -4,7 +4,7 @@ from numpy import *
 print "done."
 
 f = open('xsections_lambdaTstudy.txt','r')
-
+xsbkg=3.697e-10
 lambdats = arange(500,10500,500)
 xsecs = []
 errors = []
