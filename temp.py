@@ -31,8 +31,11 @@ for lt in arange(0,10500,500)[1:]: #[500,1000,...,9500,10000]
     hreg = freg.Get("analyze/hggMass")
     hinf = finf.Get("analyze/hggMass")
 
-    hreg.Rebin(2)
-    hinf.Rebin(2)
+    hreg.Sumw2()
+    hinf.Sumw2()
+
+    hreg.Rebin(4)
+    hinf.Rebin(4)
 
     # hregcopy = hreg.Clone()
     # hinfcopy = hinf.Clone()
@@ -42,13 +45,13 @@ for lt in arange(0,10500,500)[1:]: #[500,1000,...,9500,10000]
     # hsig.Scale(xssigplusbkg)
     # hsig.Add(hinfcopy,-1.*xsbkg)
 
-    sigbkgint = float(hreg.Integral())
-    bkgint = float(hreg.Integral())
+    # sigbkgint = float( hreg.Integral(0,hreg.GetNbinsX()+1) )
+    # bkgint = float( hinf.Integral(0,hinf.GetNbinsX()+1) )
 
-    # hreg.Scale(823./171.)
     #luminosity is 1 fb**-1
-    hreg.Scale(xssigplusbkg/sigbkgint*LUMI)
-    hinf.Scale(xsbkg/bkgint*LUMI)
+    NEVENTS=10000.
+    hreg.Scale( (xssigplusbkg/NEVENTS)*LUMI )
+    hinf.Scale( (xsbkg/NEVENTS)*LUMI )
     # hreg.Scale(xssigplusbkg)
     # hinf.Scale(xsbkg)
 
@@ -59,7 +62,7 @@ for lt in arange(0,10500,500)[1:]: #[500,1000,...,9500,10000]
     #     h.Scale( 1./h.Integral() )
 
     c = TCanvas("c","",1000,800)
-    c.Divide(1,2)
+    c.Divide(2,2)
     pad1 = c.cd(1)
     hreg.SetLineColor(kBlack)
     hinf.SetLineColor(kRed+1)
@@ -74,12 +77,25 @@ for lt in arange(0,10500,500)[1:]: #[500,1000,...,9500,10000]
 
     # # pad1.SetLogy()
     c.cd(2)
-    hsig.SetTitle("(#LambdaT=2000) - (#LambdaT=#infty)")
+    hsig.SetTitle("(#LambdaT=%i) - (#LambdaT=#infty)"%lt)
     hsig.GetYaxis().SetTitle("(#Lambda_{T}=%i) - (#Lambda_{T}=#infty)"%lt)
     # print xssig
     hsig.Scale(xssig/hsig.Integral()*LUMI)
     # hsig.GetYaxis().SetRangeUser(-0.01,0.01)
     hsig.Draw()
+    
+    # integral plot of background
+    c.cd(3)
+    print hinf.Integral()
+    hbkgint = hinf.Clone()
+    hbkgint.SetName("hbkgint")
+    hbkgint.SetTitle("")
+    endBin = hinf.GetNbinsX()+1
+    for i in range( 1, endBin):
+        x = hinf.Integral(i,endBin)
+        hbkgint.SetBinContent(i,x)
+    hbkgint.Draw()
+
     c.SaveAs("massplot_LambdaT%i.png"%lt)
     freg.Close()
     finf.Close()

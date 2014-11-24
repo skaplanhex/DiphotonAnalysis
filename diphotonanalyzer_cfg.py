@@ -2,7 +2,7 @@ from FWCore.ParameterSet.VarParsing import VarParsing
 
 options = VarParsing ('python')
 
-options.register('infilename',
+options.register('inputCfi',
                  "DUMMY",
                  VarParsing.multiplicity.singleton,
                  VarParsing.varType.string,
@@ -30,12 +30,13 @@ process.load("FWCore.MessageService.MessageLogger_cfi")
 #how many events to process.  -1 means all of them
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(options.maxEvents) )
 
-if (options.infilename != "DUMMY"):
-  process.source = cms.Source("PoolSource",
-    fileNames = cms.untracked.vstring(
-      # 'file:/uscms_data/d3/skaplan/diphotons/CMSSW_7_1_1/src/%s'%(options.infilename)
-      '/store/user/skaplan/noreplica/diphoton/%s'%(options.infilename)
-    )
+if (options.inputCfi != "DUMMY"):
+  process.load( "Analyzers.DiphotonAnalyzer.%s"%(options.inputCfi[:-3]) )
+  # process.source = cms.Source("PoolSource",
+  #   fileNames = cms.untracked.vstring(
+  #     # 'file:/uscms_data/d3/skaplan/diphotons/CMSSW_7_1_1/src/%s'%(options.infilename)
+  #     '/store/user/skaplan/noreplica/diphoton/%s'%(options.infilename)
+  #   )
 
 
 
