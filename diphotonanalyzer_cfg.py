@@ -31,7 +31,7 @@ process.load("FWCore.MessageService.MessageLogger_cfi")
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(options.maxEvents) )
 
 if (options.inputCfi != "DUMMY"):
-  process.load( "Analyzers.DiphotonAnalyzer.%s"%(options.inputCfi[:-3]) )
+  process.load( "Analyzers.DiphotonAnalyzer.%s"%(options.inputCfi) )
   # process.source = cms.Source("PoolSource",
   #   fileNames = cms.untracked.vstring(
   #     # 'file:/uscms_data/d3/skaplan/diphotons/CMSSW_7_1_1/src/%s'%(options.infilename)
