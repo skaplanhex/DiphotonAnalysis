@@ -37,10 +37,7 @@ if (options.inputCfi != "DUMMY"):
   #     # 'file:/uscms_data/d3/skaplan/diphotons/CMSSW_7_1_1/src/%s'%(options.infilename)
   #     '/store/user/skaplan/noreplica/diphoton/%s'%(options.infilename)
   #   )
-
-
-
-  )
+  
 else:
   process.source = cms.Source("PoolSource",
       # replace 'myfile.root' with the source file you want to use
