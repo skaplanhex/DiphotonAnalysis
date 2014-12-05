@@ -6,6 +6,12 @@ options.register('inputCfi',
                  "DUMMY",
                  VarParsing.multiplicity.singleton,
                  VarParsing.varType.string,
+                 "input cfi file name"
+)
+options.register('infilename',
+                 "DUMMY",
+                 VarParsing.multiplicity.singleton,
+                 VarParsing.varType.string,
                  "input file name"
 )
 
@@ -37,6 +43,10 @@ if (options.inputCfi != "DUMMY"):
   #     # 'file:/uscms_data/d3/skaplan/diphotons/CMSSW_7_1_1/src/%s'%(options.infilename)
   #     '/store/user/skaplan/noreplica/diphoton/%s'%(options.infilename)
   #   )
+elif (options.infilename != "DUMMY"):
+  process.source = cms.Source("PoolSource",
+      fileNames = cms.untracked.vstring( "file:%s"%(options.infilename) )
+  )
   
 else:
   process.source = cms.Source("PoolSource",
