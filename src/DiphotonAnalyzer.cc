@@ -79,7 +79,8 @@ class DiphotonAnalyzer : public edm::EDAnalyzer {
       TH1D* hsubleadingPhoPt;
       TH1D* hsubleadingPhoEta;
       TH1D* hsubleadingPhoPhi;
-      double maxMass = -1.;
+      TH1D* hggDPhi;
+      // double maxMass = -1.;
 };
 
 //
@@ -196,28 +197,31 @@ DiphotonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetu
         leadingPhoton.SetPtEtaPhiE(leadingPhotonPt,leadingPhotonEta,leadingPhotonPhi,leadingPhotonE);
         subleadingPhoton.SetPtEtaPhiE(subleadingPhotonPt,subleadingPhotonEta,subleadingPhotonPhi,subleadingPhotonE);
 
+        double dPhi = leadingPhoton.DeltaPhi(subleadingPhoton);
+        hggDPhi->Fill(dPhi);
+
         TLorentzVector total = leadingPhoton + subleadingPhoton; // I think this works
         double ggmass = total.M();
         hggMass->Fill( ggmass );
-        if (ggmass > maxMass) maxMass = ggmass;
+        // if (ggmass > maxMass) maxMass = ggmass;
 
-        if (ggmass < 200.){
-          cout << "---------- ggMass < 0.1 GeV! ----------" << endl;
-          cout << "" << endl;
-          cout << "ggMass: " << ggmass << endl;
-          cout << "leadingPhotonPt: " << leadingPhotonPt << endl;
-          cout << "leadingPhotonEta: " << leadingPhotonEta << endl;
-          cout << "leadingPhotonPhi: " << leadingPhotonPhi << endl;
-          cout << "leadingPhotonEnergy: " << leadingPhotonE << endl;
-          cout << "" << endl;
-          cout << "subleadingPhotonPt: " << subleadingPhotonPt << endl;
-          cout << "subleadingPhotonEta: " << subleadingPhotonEta << endl;
-          cout << "subleadingPhotonPhi: " << subleadingPhotonPhi << endl;
-          cout << "subleadingPhotonEnergy: " << subleadingPhotonE << endl;
-          cout << "" << endl;
-          cout << "-------------------------------------" << endl;
+        // if (ggmass < 200.){
+        //   cout << "---------- ggMass < 0.1 GeV! ----------" << endl;
+        //   cout << "" << endl;
+        //   cout << "ggMass: " << ggmass << endl;
+        //   cout << "leadingPhotonPt: " << leadingPhotonPt << endl;
+        //   cout << "leadingPhotonEta: " << leadingPhotonEta << endl;
+        //   cout << "leadingPhotonPhi: " << leadingPhotonPhi << endl;
+        //   cout << "leadingPhotonEnergy: " << leadingPhotonE << endl;
+        //   cout << "" << endl;
+        //   cout << "subleadingPhotonPt: " << subleadingPhotonPt << endl;
+        //   cout << "subleadingPhotonEta: " << subleadingPhotonEta << endl;
+        //   cout << "subleadingPhotonPhi: " << subleadingPhotonPhi << endl;
+        //   cout << "subleadingPhotonEnergy: " << subleadingPhotonE << endl;
+        //   cout << "" << endl;
+        //   cout << "-------------------------------------" << endl;
 
-        } //end if ggMass < 200 block
+        // } //end if ggMass < 200 block
     } //end if numPhotons >=2 block
 
 }
@@ -229,6 +233,7 @@ DiphotonAnalyzer::beginJob()
 {
     hNumPhotons = fs->make<TH1D>("hNumPhotons","Photon Multiplicity (|#eta|<1.4442)",11,-0.5,10.5);
     hggMass = fs->make<TH1D>("hggMass","",172,0,8600.);
+    hggDPhi = fs->make<TH1D>("hggDPhi","",300,-3.141593,3.141593);
     hleadingPhoPt = fs->make<TH1D>("hleadingPhoPt","Leading Photon pT",1800.,0,1800.);
     hleadingPhoEta = fs->make<TH1D>("hleadingPhoEta","Leading Photon #eta",100,-1.5,1.5);
     hleadingPhoPhi = fs->make<TH1D>("hleadingPhoPhi","Leading Photon #varphi",100,-3.1416,3.1416);
@@ -243,7 +248,7 @@ void
 DiphotonAnalyzer::endJob() 
 {
   hggMass->GetXaxis()->SetTitle("M_{#gamma#gamma} (GeV/c^{2})");
-  std::cout << "Largest diphoton invariant mass: " << maxMass << std::endl;
+  // std::cout << "Largest diphoton invariant mass: " << maxMass << std::endl;
 }
 
 // ------------ method called when starting to processes a run  ------------
