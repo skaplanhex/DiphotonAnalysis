@@ -21,6 +21,12 @@ options.register('outfilename',
                  VarParsing.varType.string,
                  "output file name"
 )
+options.register('leptonMode',
+                  False,
+                  VarParsing.multiplicity.singleton,
+                  VarParsing.varType.bool,
+                  "whether or not to look at leptons instead of photons"
+)
 
 ## 'maxEvents' is already registered by the Framework, changing default value
 options.setDefault('maxEvents', -1)
@@ -73,7 +79,8 @@ process.TFileService = cms.Service("TFileService",
 #add the example analyzer to the process object
 process.analyze = cms.EDAnalyzer('DiphotonAnalyzer',
 	#particles is a variable representing an InputTag (a descriptor of a certain object in the event, in this case, the genParticles).  The InputTag desired can be found by doing an edmDumpEventContent on one of the files in the dataset to see all the objects in the event.  Then, choose whatever you want to use.
-	particles = cms.InputTag("genParticles")
+	particles = cms.InputTag("genParticles"),
+  leptonMode = cms.bool(options.leptonMode)
 )
 
 #the path tells cmsRun which modules to be run in which order. In our case, we just need to run the analyzer

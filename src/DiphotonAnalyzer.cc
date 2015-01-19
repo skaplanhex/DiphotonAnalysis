@@ -54,7 +54,8 @@ class DiphotonAnalyzer : public edm::EDAnalyzer {
 
 
    private:
-      virtual void beginJob() ;
+      virtual void beginJob();
+      virtual bool isActualDecayProduct(int);
       virtual void analyze(const edm::Event&, const edm::EventSetup&);
       virtual void endJob() ;
 
@@ -80,7 +81,9 @@ class DiphotonAnalyzer : public edm::EDAnalyzer {
       TH1D* hsubleadingPhoEta;
       TH1D* hsubleadingPhoPhi;
       TH1D* hggDPhi;
-      // double maxMass = -1.;
+      bool leptonMode;
+      int  numElectrons = 0;
+      int  numMuons = 0;
 };
 
 //
@@ -99,6 +102,7 @@ DiphotonAnalyzer::DiphotonAnalyzer(const edm::ParameterSet& iConfig)
 {
   //This line looks at the paramater set that is passed to the analyzer via the config file.  The particles_ object will represent whatever is passed to the particles variable in the config file (in our case, the genParticles).
   particles_ = iConfig.getParameter<edm::InputTag>("particles");
+  leptonMode = iConfig.getParameter<bool>("leptonMode");
 
 }
 
@@ -115,6 +119,14 @@ DiphotonAnalyzer::~DiphotonAnalyzer()
 //
 // member functions
 //
+
+bool DiphotonAnalyzer::isActualDecayProduct(int pdgId){
+  //take the absolute value just in case
+  pdgId = abs(pdgId);
+  if ( !leptonMode && pdgId == 22 ) return true;
+  else if ( leptonMode && ((pdgId == 11) || (pdgId == 13)) ) return true;
+  else return false;
+}
 
 // ------------ method called for each event  ------------
 void
@@ -136,19 +148,28 @@ DiphotonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetu
     double subleadingPhotonEta = -2.;
     double subleadingPhotonPhi = -2.;
     double subleadingPhotonE = -2.;
-    double numPhotons = 0;
+    int    numPhotons = 0;
+    int    numFinalState = 0;
+
     for (reco::GenParticleCollection::const_iterator iParticle = particles->begin(); iParticle != particles->end(); ++iParticle){
-        //only want to look at photons
-        if ( iParticle->pdgId() != 22 ) continue;
+
+        int pdgId = abs( iParticle->pdgId() );
+        if ( !isActualDecayProduct(pdgId) ) continue;
+        // if ( pdgId != 22 ) continue;
         double pt = iParticle->pt();
         double eta = iParticle->eta();
         double phi = iParticle->phi();
         double energy = iParticle->energy();
         int status = iParticle->status();
-        //eta cut
+
+        //eta, pt, and status cuts
         if ( fabs(eta) > 1.4442 || pt < 60. || status != 1) continue;
 
-        numPhotons++;
+        numFinalState++;
+
+        if (pdgId==22) numPhotons++;
+        else if (pdgId==11) numElectrons++;
+        else if (pdgId==13) numMuons++;
 
         if (pt > leadingPhotonPt){
             //if we found a new leading photon, then the new subleading is the previous leading
@@ -181,7 +202,7 @@ DiphotonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetu
 
     hNumPhotons->Fill(numPhotons);
 
-    if(numPhotons >= 2){
+    if(numFinalState >= 2){
 
         //fill histograms
         hleadingPhoPt->Fill(leadingPhotonPt);
@@ -248,6 +269,8 @@ void
 DiphotonAnalyzer::endJob() 
 {
   hggMass->GetXaxis()->SetTitle("M_{#gamma#gamma} (GeV/c^{2})");
+  std::cout << "Electron Count: " << numElectrons << std::endl;
+  std::cout << "Muon Count: " << numMuons << std::endl;
   // std::cout << "Largest diphoton invariant mass: " << maxMass << std::endl;
 }
 
