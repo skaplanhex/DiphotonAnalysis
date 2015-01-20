@@ -292,10 +292,12 @@ DiphotonAnalyzer::beginJob()
 void 
 DiphotonAnalyzer::endJob() 
 {
-  hggMass->GetXaxis()->SetTitle("M_{#gamma#gamma} (GeV/c^{2})");
-  std::cout << "Electron Count: " << numElectrons << std::endl;
-  std::cout << "Muon Count: " << numMuons << std::endl;
-  // std::cout << "Largest diphoton invariant mass: " << maxMass << std::endl;
+    hggMass->GetXaxis()->SetTitle("M_{#gamma#gamma} (GeV/c^{2})");
+    if( leptonMode ){
+      std::cout << "Electron Count: " << numElectrons << std::endl;
+      std::cout << "Muon Count: " << numMuons << std::endl;
+    }
+    // std::cout << "Largest diphoton invariant mass: " << maxMass << std::endl;
 }
 
 // ------------ method called when starting to processes a run  ------------

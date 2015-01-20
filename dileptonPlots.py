@@ -162,7 +162,7 @@ for lt in (2000,4000):
 
     # # pad1.SetLogy()
     c.cd(2)
-    hsig.SetTitle("(#Lambda_{T}=%i) - SM #gamma#gamma Background"%lt)
+    hsig.SetTitle("(#Lambda_{T}=%i) - SM Dilepton Background"%lt)
     # hsig.GetYaxis().SetTitle("(#Lambda_{T}=%i) - (#Lambda_{T}=#infty)"%lt)
     # print xssig
     # hsig.Scale(xssig/hsig.Integral()*LUMI)
