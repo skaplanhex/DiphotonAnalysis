@@ -83,6 +83,7 @@ class DiphotonAnalyzer : public edm::EDAnalyzer {
       TH1D* hsubleadingPhoPhi;
       TH1D* hggDPhi;
 
+      TH2D* subleadingPt_leadingPt;
       TH2D* leadingPt_mgg;
       TH2D* subleadingPt_mgg;
       TH2D* dRgg_mgg;
@@ -220,6 +221,7 @@ DiphotonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetu
         hsubleadingPhoPt->Fill(subleadingPhotonPt);
         hsubleadingPhoEta->Fill(subleadingPhotonEta);
         hsubleadingPhoPhi->Fill(subleadingPhotonPhi);
+        subleadingPt_leadingPt->Fill(leadingPhotonPt,subleadingPhotonPt);
 
         //fill a mass plot
         TLorentzVector leadingPhoton,subleadingPhoton;
@@ -278,6 +280,7 @@ DiphotonAnalyzer::beginJob()
     hsubleadingPhoEta = fs->make<TH1D>("hsubleadingPhoEta","Subleading Photon #eta",100,-1.5,1.5);
     hsubleadingPhoPhi = fs->make<TH1D>("hsubleadingPhoPhi","Subleading Photon #varphi",100,-3.1416,3.1416);
 
+    subleadingPt_leadingPt = fs->make<TH2D>("subleadingPt_leadingPt","",1800,0,1800.,1800,0,1800.);
     leadingPt_mgg = fs->make<TH2D>("leadingPt_mgg","",172,0,8600.,1800,0,1800.);
     subleadingPt_mgg = fs->make<TH2D>("subleadingPt_mgg","",172,0,8600.,1800,0,1800.);
     dRgg_mgg = fs->make<TH2D>("dRgg_mgg","",172,0,8600.,100,0,10.);
