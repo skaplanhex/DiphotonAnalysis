@@ -41,6 +41,7 @@
 #include "DataFormats/HepMCCandidate/interface/GenParticleFwd.h"
 #include <vector>
 #include "TLorentzVector.h"
+#include "TH2D.h"
 //
 // class declaration
 //
@@ -81,6 +82,13 @@ class DiphotonAnalyzer : public edm::EDAnalyzer {
       TH1D* hsubleadingPhoEta;
       TH1D* hsubleadingPhoPhi;
       TH1D* hggDPhi;
+
+      TH2D* leadingPt_mgg;
+      TH2D* subleadingPt_mgg;
+      TH2D* dRgg_mgg;
+      TH2D* dEtagg_mgg;
+      TH2D* dPhigg_mgg;
+
       bool leptonMode;
       int  numElectrons = 0;
       int  numMuons = 0;
@@ -261,7 +269,12 @@ DiphotonAnalyzer::beginJob()
     hsubleadingPhoPt = fs->make<TH1D>("hsubleadingPhoPt","Subleading Photon pT",1800.,0,1800.);
     hsubleadingPhoEta = fs->make<TH1D>("hsubleadingPhoEta","Subleading Photon #eta",100,-1.5,1.5);
     hsubleadingPhoPhi = fs->make<TH1D>("hsubleadingPhoPhi","Subleading Photon #varphi",100,-3.1416,3.1416);
-  
+
+    leadingPt_mgg = fs->make<TH2D>("leadingPt_mgg","",1800,0,1800.,172,0,8600.);
+    subleadingPt_mgg = fs->make<TH2D>("subleadingPt_mgg","",1800,0,1800.,172,0,8600.);
+    dRgg_mgg = fs->make<TH2D>("dRgg_mgg","",100,0,10,172,0,8600.);
+    dEtagg_mgg = fs->make<TH2D>("dEtagg_mgg","",100,-1.5,1.5,172,0,8600.);
+    dPhigg_mgg = fs->make<TH2D>("dPhigg_mgg","",100,-3.1416,3.1416,172,0,8600.);  
 }
 
 // ------------ method called once each job just after ending the event loop  ------------
