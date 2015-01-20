@@ -233,12 +233,11 @@ DiphotonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetu
         double ggmass = total.M();
         hggMass->Fill( ggmass );
 
-        //fill 2D histograms
-      //         TH2D* leadingPt_mgg;
-      // TH2D* subleadingPt_mgg;
-      // TH2D* dRgg_mgg;
-      // TH2D* dEtagg_mgg;
-      // TH2D* dPhigg_mgg;
+        leadingPt_mgg->Fill(ggmass,leadingPhotonPt);
+        subleadingPt_mgg->Fill(ggmass,subleadingPhotonPt);
+        dRgg_mgg->Fill( ggmass,leadingPhoton.DeltaR(subleadingPhoton) );
+        dEtagg_mgg->Fill( ggmass,leadingPhoton.Eta() - subleadingPhoton.Eta() );
+        dPhigg_mgg->Fill(ggmass,dPhi);
 
 
         // if (ggmass > maxMass) maxMass = ggmass;
