@@ -115,20 +115,20 @@ for lt in (2000,3000,3500,4000,4500,5000,6000):
     hsig500PP=hreg500.Clone()
     hsig500PP.Add(hinf500PP,-1.)
 
-    hreg = hreg500.Clone()
-    # hreg.Add(hreg500,1.)
+    hreg = hreg150.Clone()
+    hreg.Add(hreg500,1.)
 
-    hinf = hinf500.Clone()
-    # hinf.Add(hinf500,1.)
+    hinf = hinf150.Clone()
+    hinf.Add(hinf500,1.)
 
-    hinfPP = hinf500PP.Clone()
-    # hinfPP.Add(hinf500PP,1.)
+    hinfPP = hinf150PP.Clone()
+    hinfPP.Add(hinf500PP,1.)
 
-    hsig = hsig500.Clone()
-    # hsig.Add(hsig500,1.)
+    hsig = hsig150.Clone()
+    hsig.Add(hsig500,1.)
 
-    hsigPP = hsig500PP.Clone()
-    # hsigPP.Add(hsig500PP,1.)
+    hsigPP = hsig150PP.Clone()
+    hsigPP.Add(hsig500PP,1.)
 
     # for h in (hreg,hinf):
     #     h.Scale( 1./h.Integral() )
@@ -208,6 +208,6 @@ for lt in (2000,3000,3500,4000,4500,5000,6000):
     #     hsigint.SetBinContent(i,x)
     # hsigint.Draw()
 
-    c.SaveAs("massplot_LambdaT%i_pTHat500-Inf.png"%(lt))
+    c.SaveAs("massplot_LambdaT%i.png"%(lt))
     # freg.Close()
     # finf.Close()
