@@ -232,6 +232,15 @@ DiphotonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetu
         TLorentzVector total = leadingPhoton + subleadingPhoton; // I think this works
         double ggmass = total.M();
         hggMass->Fill( ggmass );
+
+        //fill 2D histograms
+      //         TH2D* leadingPt_mgg;
+      // TH2D* subleadingPt_mgg;
+      // TH2D* dRgg_mgg;
+      // TH2D* dEtagg_mgg;
+      // TH2D* dPhigg_mgg;
+
+
         // if (ggmass > maxMass) maxMass = ggmass;
 
         // if (ggmass < 200.){
@@ -270,11 +279,11 @@ DiphotonAnalyzer::beginJob()
     hsubleadingPhoEta = fs->make<TH1D>("hsubleadingPhoEta","Subleading Photon #eta",100,-1.5,1.5);
     hsubleadingPhoPhi = fs->make<TH1D>("hsubleadingPhoPhi","Subleading Photon #varphi",100,-3.1416,3.1416);
 
-    leadingPt_mgg = fs->make<TH2D>("leadingPt_mgg","",1800,0,1800.,172,0,8600.);
-    subleadingPt_mgg = fs->make<TH2D>("subleadingPt_mgg","",1800,0,1800.,172,0,8600.);
-    dRgg_mgg = fs->make<TH2D>("dRgg_mgg","",100,0,10,172,0,8600.);
-    dEtagg_mgg = fs->make<TH2D>("dEtagg_mgg","",100,-1.5,1.5,172,0,8600.);
-    dPhigg_mgg = fs->make<TH2D>("dPhigg_mgg","",100,-3.1416,3.1416,172,0,8600.);  
+    leadingPt_mgg = fs->make<TH2D>("leadingPt_mgg","",172,0,8600.,1800,0,1800.);
+    subleadingPt_mgg = fs->make<TH2D>("subleadingPt_mgg","",172,0,8600.,1800,0,1800.);
+    dRgg_mgg = fs->make<TH2D>("dRgg_mgg","",172,0,8600.,100,0,10.);
+    dEtagg_mgg = fs->make<TH2D>("dEtagg_mgg","",172,0,8600.,100,-1.5,1.5);
+    dPhigg_mgg = fs->make<TH2D>("dPhigg_mgg","",172,0,8600.,100,-3.1416,3.1416);  
 }
 
 // ------------ method called once each job just after ending the event loop  ------------
