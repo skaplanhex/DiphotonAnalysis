@@ -91,6 +91,8 @@ class DiphotonAnalyzer : public edm::EDAnalyzer {
       TH2D* dPhigg_mgg;
 
       bool leptonMode;
+      double leadingPtCut;
+      double subleadingPtCut;
       int  numElectrons = 0;
       int  numMuons = 0;
 };
@@ -111,7 +113,9 @@ DiphotonAnalyzer::DiphotonAnalyzer(const edm::ParameterSet& iConfig)
 {
   //This line looks at the paramater set that is passed to the analyzer via the config file.  The particles_ object will represent whatever is passed to the particles variable in the config file (in our case, the genParticles).
   particles_ = iConfig.getParameter<edm::InputTag>("particles");
-  leptonMode = iConfig.getParameter<bool>("leptonMode");
+  leptonMode = ( iConfig.exists("leptonMode") ? iConfig.getParameter<bool>("leptonMode") : false );
+  leadingPtCut = iConfig.getParameter<double>("leadingPtCut");
+  subleadingPtCut = iConfig.getParameter<double>("subleadingPtCut");
 
 }
 
@@ -211,7 +215,7 @@ DiphotonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetu
 
     hNumPhotons->Fill(numPhotons);
 
-    if(numFinalState >= 2){
+    if( numFinalState >= 2 && (leadingPhotonPt > leadingPtCut) && (subleadingPhotonPt > subleadingPtCut) ){
 
         //fill histograms
         hleadingPhoPt->Fill(leadingPhotonPt);
