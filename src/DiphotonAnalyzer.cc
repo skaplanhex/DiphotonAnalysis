@@ -83,6 +83,10 @@ class DiphotonAnalyzer : public edm::EDAnalyzer {
       TH1D* hsubleadingPhoPhi;
       TH1D* hggDPhi;
 
+      TH1D* allPhotonPt;
+      TH1D* allPhotonEta;
+      TH1D* allPhotonPhi;
+
       TH2D* subleadingPt_leadingPt;
       TH2D* leadingPt_mgg;
       TH2D* subleadingPt_mgg;
@@ -174,6 +178,12 @@ DiphotonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetu
         double phi = iParticle->phi();
         double energy = iParticle->energy();
         int status = iParticle->status();
+
+        if (status == 1){
+          allPhotonPt->Fill(pt);
+          allPhotonEta->Fill(eta);
+          allPhotonPhi->Fill(phi);
+        }
 
         //eta, pt, and status cuts
         if ( fabs(eta) > 1.4442 || pt < 60. || status != 1) continue;
@@ -283,6 +293,10 @@ DiphotonAnalyzer::beginJob()
     hsubleadingPhoPt = fs->make<TH1D>("hsubleadingPhoPt","Subleading Photon pT",1800.,0,1800.);
     hsubleadingPhoEta = fs->make<TH1D>("hsubleadingPhoEta","Subleading Photon #eta",100,-1.5,1.5);
     hsubleadingPhoPhi = fs->make<TH1D>("hsubleadingPhoPhi","Subleading Photon #varphi",100,-3.1416,3.1416);
+
+    allPhotonPt = fs->make<TH1D>("allPhotonPt","",1800,0,1800.);
+    allPhotonEta = fs->make<TH1D>("allPhotonEta","",100,-6.,6.);
+    allPhotonPhi = fs->make<TH1D>("allPhotonPhi","",100,-3.1416,3.1416);
 
     subleadingPt_leadingPt = fs->make<TH2D>("subleadingPt_leadingPt","",1800,0,1800.,1800,0,1800.);
     leadingPt_mgg = fs->make<TH2D>("leadingPt_mgg","",172,0,8600.,1800,0,1800.);
