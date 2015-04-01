@@ -99,6 +99,9 @@ class DiphotonAnalyzer : public edm::EDAnalyzer {
       double subleadingPtCut;
       int  numElectrons = 0;
       int  numMuons = 0;
+
+      int numTotalEvents = 0;
+      int numEventsPassingCuts = 0;
 };
 
 //
@@ -168,6 +171,8 @@ DiphotonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetu
     int    numPhotons = 0;
     int    numFinalState = 0;
 
+    numTotalEvents++;
+
     for (reco::GenParticleCollection::const_iterator iParticle = particles->begin(); iParticle != particles->end(); ++iParticle){
 
         int pdgId = abs( iParticle->pdgId() );
@@ -226,6 +231,8 @@ DiphotonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetu
     hNumPhotons->Fill(numPhotons);
 
     if( numFinalState >= 2 && (leadingPhotonPt > leadingPtCut) && (subleadingPhotonPt > subleadingPtCut) ){
+
+        numEventsPassingCuts++;
 
         //fill histograms
         hleadingPhoPt->Fill(leadingPhotonPt);
@@ -315,6 +322,9 @@ DiphotonAnalyzer::endJob()
       std::cout << "Electron Count: " << numElectrons << std::endl;
       std::cout << "Muon Count: " << numMuons << std::endl;
     }
+    std::cout << "Number of Events Passing Cuts: " << numEventsPassingCuts << std::endl;
+    std::cout << "Number of Total Events: " << numTotalEvents << std::endl;
+    std::cout << "--> Cut Efficiency = " << (1.0*numEventsPassingCuts)/(1.0*numTotalEvents) << std::endl;
     // std::cout << "Largest diphoton invariant mass: " << maxMass << std::endl;
 }
 
