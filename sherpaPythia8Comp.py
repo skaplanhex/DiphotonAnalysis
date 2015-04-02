@@ -1,69 +1,235 @@
 print "loading ROOT..."
 from ROOT import *
-# from numpy import *
+import sys
 print "done."
 
 gROOT.SetBatch()
+gStyle.SetOptStat(0)
 
-# Xss
-sherpaXSs={} #already in fb
-# sherpaXSs[2000] = 703.788
-# sherpaXSs[4000] = 81.7988
-sherpaXSs[2000] = 3013.64
-sherpaXSs[4000] = 95.2424
-sherpaXSs[100000] = 360.707
+sherpaXSs={}
+pythia8XSs = {}
 
-pythia8XSs = {} # given initially in mb but converted here
-pythia8XSs[2000] = (1.603450e-09)*(1e12)
-pythia8XSs[4000] = (5.606350e-12)*(1e12)
-pythia8XSs[100000] = (1.636800e-12)*(1e12)
+xsFile = open("xsections_p8sherpacomparison.txt",'r')
 
-# sherpaFilenames={
-#     "low":"sherpabkg_mgg300-1000.root",
-#     "hi":"sherpabkg_mgg1000-Inf.root"
-# }
-# pythiaFilenames={
-#     "low":"plots_LambdaTStudy_LambdaT100K_pTHat150-500.root",
-#     "hi":"plots_LambdaTStudy_LambdaT100K_pTHat500-Inf.root"
-# }
+for line in xsFile:
+    s = line.split()
+    genName = str(s[0])
+    if genName == "p8":
+        pythia8XSs[ (int(s[1]),s[2]) ] = float(s[-1]) #key is a tuple (MS,pTHatBin)
+    elif genName == "sherpa":
+        sherpaXSs[ (int(s[1]),s[2]) ] = float(s[-1])  #key is a tuple (MS,pTHatBin)
+    else:
+        print "Generator name not recognized, what's going on?"
+        sys.exit(1)
+xsFile.close()
 
-for ms in (2000,4000):
-    sherpaFile = TFile("sherpa_himass_Ms%i_MCut8600_plots.root"%ms,"read")
-    pythia8File = TFile("/uscms_data/d3/skaplan/diphotons/CMSSW_7_1_1/src/Analyzers/DiphotonAnalyzer/plots_LambdaTStudy_LambdaT%i_pTHat500-Inf.root"%ms,"read")
+# define background cross sections and histograms
 
-    LUMI = 1. #fb**-1
+LUMI = 1. #fb**-1
+NEVENTS=1.e5
 
-    sherpaXS = sherpaXSs[ms]
-    pythiaXS = pythia8XSs[ms]
+p8BkgXS_lowpt = pythia8XSs[(100000,"150-500")] 
+p8BkgXS_highpt = pythia8XSs[(100000,"500-Inf")]
 
-    sherpaHist = sherpaFile.Get("analyze/hggMass")
-    pythiaHist = pythia8File.Get("analyze/hggMass")
+sherpaBkgXS_lowpt = sherpaXSs[(100000,"150-500")]
+sherpaBkgXS_highpt = sherpaXSs[(100000,"500-Inf")]
 
-    sherpaNEvents=100000.
-    pythiaNEvents=100000.
+p8BkgFile_lowpt = TFile("plots_hewett1_LambdaT100000_pTHat150-500.root","read")
+p8BkgFile_highpt = TFile("plots_hewett1_LambdaT100000_pTHat500-Inf.root","read")
 
-    sherpaHist.Scale( (sherpaXS/sherpaNEvents)*LUMI )
-    pythiaHist.Scale( (pythiaXS/pythiaNEvents)*LUMI )
+sherpaBkgFile_lowpt = TFile("plots_sherpa_Ms100000_Mgg300-1000.root","read")
+sherpaBkgFile_highpt = TFile("plots_sherpa_Ms100000_Mgg1000-Inf.root","read")
 
-    sherpaHist.SetLineColor(kRed+1)
-    sherpaHist.SetLineStyle(4)
-    sherpaHist.SetLineWidth(2)
+p8BkgHist_lowpt = p8BkgFile_lowpt.Get("analyze/hggMass")
+p8BkgHist_lowpt.Sumw2()
+p8BkgHist_lowpt.Scale( (p8BkgXS_lowpt/NEVENTS)*LUMI )
 
-    pythiaHist.SetLineColor(kBlack)
-    # pythiaHist.SetLineStyle(4)
-    pythiaHist.SetLineWidth(2)
+p8BkgHist_highpt = p8BkgFile_highpt.Get("analyze/hggMass")
+p8BkgHist_highpt.Sumw2()
+p8BkgHist_highpt.Scale( (p8BkgXS_highpt/NEVENTS)*LUMI )
+
+sherpaBkgHist_lowpt = sherpaBkgFile_lowpt.Get("analyze/hggMass")
+sherpaBkgHist_lowpt.Sumw2()
+sherpaBkgHist_lowpt.Scale( (sherpaBkgXS_lowpt/NEVENTS)*LUMI )
+
+sherpaBkgHist_highpt = sherpaBkgFile_highpt.Get("analyze/hggMass")
+sherpaBkgHist_highpt.Sumw2()
+sherpaBkgHist_highpt.Scale( (sherpaBkgXS_highpt/NEVENTS)*LUMI )
+
+for ms in (3000,5000):
+    p8SigFile_lowpt = TFile("plots_hewett1_LambdaT%i_pTHat150-500.root"%(ms),"read")
+    p8SigFile_highpt = TFile("plots_hewett1_LambdaT%i_pTHat500-Inf.root"%(ms),"read")
+
+    sherpaSigFile_lowpt = TFile("plots_sherpa_Ms%i_Mgg300-1000.root"%(ms),"read")
+    sherpaSigFile_highpt = TFile("plots_sherpa_Ms%i_Mgg1000-Inf.root"%(ms),"read")
+
+    p8XS_lowpt = pythia8XSs[(ms,"150-500")]
+    p8XS_highpt = pythia8XSs[(ms,"500-Inf")]
+
+    sherpaXS_lowpt = sherpaXSs[(ms,"150-500")]
+    sherpaXS_highpt = sherpaXSs[(ms,"500-Inf")]
+
+    # get and scale all the histograms
+    p8Hist_lowpt = p8SigFile_lowpt.Get("analyze/hggMass")
+    p8Hist_lowpt.Sumw2()
+    p8Hist_lowpt.Scale( (p8XS_lowpt/NEVENTS)*LUMI )
+
+    p8Hist_highpt = p8SigFile_highpt.Get("analyze/hggMass")
+    p8Hist_highpt.Sumw2()
+    p8Hist_highpt.Scale( (p8XS_highpt/NEVENTS)*LUMI )
+
+    sherpaHist_lowpt = sherpaSigFile_lowpt.Get("analyze/hggMass")
+    sherpaHist_lowpt.Sumw2()
+    sherpaHist_lowpt.Scale( (sherpaXS_lowpt/NEVENTS)*LUMI )
+
+    sherpaHist_highpt = sherpaSigFile_highpt.Get("analyze/hggMass")
+    sherpaHist_highpt.Sumw2()
+    sherpaHist_highpt.Scale( (sherpaXS_highpt/NEVENTS)*LUMI )
+
+    # combine pT bins into one histogram
+
+    p8Hist = p8Hist_lowpt.Clone()
+    p8Hist.Add(p8Hist_highpt,1.)
+
+    sherpaHist = sherpaHist_lowpt.Clone()
+    sherpaHist.Add(sherpaHist_highpt,1.)
+
+    p8Hist_bkg = p8BkgHist_lowpt.Clone()
+    p8Hist_bkg.Add(p8BkgHist_highpt,1.)
+
+    sherpaHist_bkg = sherpaBkgHist_lowpt.Clone()
+    sherpaHist_bkg.Add(sherpaBkgHist_highpt,1.)
+
+    # now subtract the background to get a signal only plot
+
+    p8Hist_sig = p8Hist.Clone()
+    p8Hist_sig.Add(p8Hist_bkg,-1.)
+
+    sherpaHist_sig = sherpaHist.Clone()
+    sherpaHist_sig.Add(sherpaHist_bkg,-1.)
+
+    # now that we finally have the histograms, make plots!
 
     c = TCanvas("c","",800,800)
 
-    sherpaHist.GetXaxis().SetTitle("M_{#gamma#gamma} (GeV/c^{2})")
-    sherpaHist.GetYaxis().SetTitle("Number of Events")
-    sherpaHist.Draw()
-    pythiaHist.Draw("same")
+    p8Hist.SetLineColor(kBlack)
+    p8Hist.SetLineWidth(2)
+    sherpaHist.SetLineColor(kRed)
+    sherpaHist.SetLineWidth(2)
+    sherpaHist.SetLineStyle(4)
 
-    c.SaveAs("sherpaPythia8Comp_Ms%i_MCut8600_plots.pdf"%ms)
+    p8Hist.Draw()
+    sherpaHist.Draw("same")
 
-    # raw_input("Enter to quit: ")
+    leg = TLegend(.63,.37,.87,.48)
+    leg.SetBorderSize(0)
+    leg.SetFillColor(0)
+    leg.SetFillStyle(0)
+    leg.SetTextFont(42)
+    leg.SetTextSize(0.02)
+    leg.AddEntry(p8Hist,"Pythia 8","L")
+    leg.AddEntry(sherpaHist,"Sherpa","L")
+    leg.Draw()
 
+    # l1 = TLatex()
+    # l1.SetTextAlign(13)
+    # l1.SetTextFont(42)
+    # l1.SetTextSize(0.025)
+    # l1.DrawLatex(0.63,0.57,"testing")
 
+    c.SaveAs("p8sherpacomp_sigbkg_ms%i.pdf"%ms)
 
+    c.Clear()
 
+    p8Hist_sig.SetLineColor(kBlack)
+    p8Hist_sig.SetLineWidth(2)
+    sherpaHist_sig.SetLineColor(kRed)
+    sherpaHist_sig.SetLineWidth(2)
+    sherpaHist_sig.SetLineStyle(4)
+
+    p8Hist_sig2 = p8Hist_sig.Clone()
+    sherpaHist_sig2 = sherpaHist_sig.Clone()
+    p8Hist_sig2.Rebin(2)
+    sherpaHist_sig2.Rebin(2)
+
+    sherpaHist_sig2.Draw()
+    p8Hist_sig2.Draw("same")
+
+    leg = TLegend(.63,.37,.87,.48)
+    leg.SetBorderSize(0)
+    leg.SetFillColor(0)
+    leg.SetFillStyle(0)
+    leg.SetTextFont(42)
+    leg.SetTextSize(0.02)
+    leg.AddEntry(p8Hist_sig2,"Pythia 8","L")
+    leg.AddEntry(sherpaHist_sig2,"Sherpa","L")
+    leg.Draw()
+
+    c.SaveAs("p8sherpacomp_sig_ms%i.pdf"%ms)
+
+    c.Clear()
+
+    p8Hist_bkg.SetLineColor(kBlue)
+    p8Hist_bkg.SetLineWidth(2)
+    p8Hist_bkg.SetLineStyle(4)
+
+    p8Hist_bkg.Draw()
+    p8Hist.Draw("same")
+
+    leg = TLegend(.63,.77,.87,.88)
+    leg.SetBorderSize(0)
+    leg.SetFillColor(0)
+    leg.SetFillStyle(0)
+    leg.SetTextFont(42)
+    leg.SetTextSize(0.02)
+    leg.AddEntry(p8Hist,"ADD S+B (Pythia 8)","L")
+    leg.AddEntry(p8Hist_bkg,"SM Background (Pythia 8)","L")
+    leg.Draw()
+
+    c.SetLogy()
+    c.SaveAs("p8sherpacomp_p8_ms%i.pdf"%ms)
+
+    c.Clear()
+
+    sherpaHist_bkg.SetLineColor(kBlue)
+    sherpaHist_bkg.SetLineWidth(2)
+    sherpaHist_bkg.SetLineStyle(4)
+
+    sherpaHist.SetLineStyle(0)
+    sherpaHist.SetLineColor(kBlack)
+
+    sherpaHist_bkg.Draw()
+    sherpaHist.Draw("same")
+
+    leg = TLegend(.63,.77,.87,.88)
+    leg.SetBorderSize(0)
+    leg.SetFillColor(0)
+    leg.SetFillStyle(0)
+    leg.SetTextFont(42)
+    leg.SetTextSize(0.02)
+    leg.AddEntry(sherpaHist,"ADD S+B (Sherpa)","L")
+    leg.AddEntry(sherpaHist_bkg,"SM Background (Sherpa)","L")
+    leg.Draw()
+
+    c.SetLogy()
+    c.SaveAs("p8sherpacomp_sherpa_ms%i.pdf"%ms)
+
+    c.Clear()
+
+    p8Hist_bkg.SetLineColor(kBlack)
+    sherpaHist_bkg.SetLineColor(kRed)
+
+    sherpaHist_bkg.Draw()
+    p8Hist_bkg.Draw("same")
+
+    leg = TLegend(.63,.77,.87,.88)
+    leg.SetBorderSize(0)
+    leg.SetFillColor(0)
+    leg.SetFillStyle(0)
+    leg.SetTextFont(42)
+    leg.SetTextSize(0.02)
+    leg.AddEntry(p8Hist_bkg,"SM Background (Pythia 8)","L")
+    leg.AddEntry(sherpaHist_bkg,"SM Background (Sherpa)","L")
+    leg.Draw()
+
+    c.SaveAs("p8sherpacomp_bkg_ms%s.pdf"%ms)

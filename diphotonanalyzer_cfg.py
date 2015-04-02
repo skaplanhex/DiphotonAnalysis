@@ -83,6 +83,8 @@ else:
       )
   )
 
+process.source.duplicateCheckMode = cms.untracked.string('noDuplicateCheck')
+
 #this lets cmsRun know we want TFile output (histograms, TGraphs, etc.)
 process.TFileService = cms.Service("TFileService",
       fileName = cms.string(options.outfilename)
