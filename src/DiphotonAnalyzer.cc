@@ -102,6 +102,8 @@ class DiphotonAnalyzer : public edm::EDAnalyzer {
 
       int numTotalEvents = 0;
       int numEventsPassingCuts = 0;
+
+      std::string eventSource;
 };
 
 //
@@ -123,6 +125,8 @@ DiphotonAnalyzer::DiphotonAnalyzer(const edm::ParameterSet& iConfig)
   leptonMode = ( iConfig.exists("leptonMode") ? iConfig.getParameter<bool>("leptonMode") : false );
   leadingPtCut = iConfig.getParameter<double>("leadingPtCut");
   subleadingPtCut = iConfig.getParameter<double>("subleadingPtCut");
+  eventSource = iConfig.getParameter<std::string>("eventSource");
+  std::cout << "eventSource: " << eventSource << std::endl;
 
 }
 

@@ -41,6 +41,7 @@ def concatenate(info,finalHistoName,lumi):
         histo = tempFile.Get( histoLocations[binNum] )
         xs = crossSections[binNum]
         nevents = nEventsList[binNum]
+        histo.Sumw2()
         histo.Scale( (xs/nevents)*lumi )
         finalHisto.Add(histo,1.)
     return finalHisto

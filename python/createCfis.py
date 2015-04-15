@@ -1,22 +1,21 @@
 import os
 
-# for lt in ("100K","2000","3000","3500","4000","4500","5000","6000"):
-for lt in (3000,4000,5000,100000):
-    for p in ("300-1000","1000-Inf"):
+for lt in (3000,4000,100000):
+    for p in ("200-750","750-2000","2000-lt"):
             # if lt == 2000 and p == "500-Inf":
             #     continue
-        folder="mgg%s_Ms%i/"%(p,lt)
+        folder="LambdaT%i_mHat%s/"%(lt,p)
         # folder = "pTHat%s/"%p
         # eospath = "/eos/uscms/store/user/skaplan/noreplica/LambdaTStudy/"
-        eospath = '/eos/uscms/store/user/skaplan/noreplica/sherpaevents/'
-        shortpath = "/store/user/skaplan/noreplica/sherpaevents/"
+        eospath = '/eos/uscms/store/user/skaplan/noreplica/p8sherpacomparison/pythia8/8TeV/'
+        shortpath = "/store/user/skaplan/noreplica/p8sherpacomparison/pythia8/8TeV/"
         fullpath = eospath+folder
         outfiles = os.listdir(fullpath)
         outfilesnew=[]
         for f in outfiles:
             outfilesnew.append("        '"+shortpath + folder + f + "',")
         # fname = "ADDGravitontoGG_M1200_LambdaT%s_pTHat%s_cfi.py"%(lt,p)
-        fname = "ADDdiPhoton_sherpa_KK1_NED4_MS%i_MGG%s_cfi.py"%(lt,p)
+        fname = "ADDdiPhoton_8TeV_LambdaT%i_mHat%s_cfi.py"%(lt,p)
         # fname = "ADDdiPhoton_LambdaT%i_pTHat%s_Hewett1_cfi.py"%(lt,p)
         print "Creating %s"%fname
         out = open(fname,'w')

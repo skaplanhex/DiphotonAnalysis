@@ -95,7 +95,8 @@ process.analyze = cms.EDAnalyzer('DiphotonAnalyzer',
 	particles = cms.InputTag("genParticles"),
   leptonMode = cms.bool(options.leptonMode),
   leadingPtCut = cms.double(options.leadingPtCut),
-  subleadingPtCut = cms.double(options.subleadingPtCut)
+  subleadingPtCut = cms.double(options.subleadingPtCut),
+  eventSource = cms.string(options.inputCfi) 
 )
 
 #the path tells cmsRun which modules to be run in which order. In our case, we just need to run the analyzer
