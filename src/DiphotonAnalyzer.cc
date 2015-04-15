@@ -87,6 +87,13 @@ class DiphotonAnalyzer : public edm::EDAnalyzer {
       TH1D* allPhotonEta;
       TH1D* allPhotonPhi;
 
+      TH1D* hleadingPhoPt_beforecuts;
+      TH1D* hleadingPhoEta_beforecuts;
+      TH1D* hleadingPhoPhi_beforecuts;
+      TH1D* hsubleadingPhoPt_beforecuts;
+      TH1D* hsubleadingPhoEta_beforecuts;
+      TH1D* hsubleadingPhoPhi_beforecuts;
+
       TH2D* subleadingPt_leadingPt;
       TH2D* leadingPt_mgg;
       TH2D* subleadingPt_mgg;
@@ -195,7 +202,7 @@ DiphotonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetu
         }
 
         //eta, pt, and status cuts
-        if ( fabs(eta) > 1.4442 || pt < 60. || status != 1) continue;
+        if (status != 1) continue;
 
         numFinalState++;
 
@@ -234,7 +241,21 @@ DiphotonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetu
 
     hNumPhotons->Fill(numPhotons);
 
-    if( numFinalState >= 2 && (leadingPhotonPt > leadingPtCut) && (subleadingPhotonPt > subleadingPtCut) ){
+    if (numFinalState >= 2){
+      
+      hleadingPhoPt_beforecuts->Fill(leadingPhotonPt);
+      hleadingPhoEta_beforecuts->Fill(leadingPhotonEta);
+      hleadingPhoPhi_beforecuts->Fill(leadingPhotonPhi);
+
+      hsubleadingPhoPt_beforecuts->Fill(subleadingPhotonPt);
+      hsubleadingPhoEta_beforecuts->Fill(subleadingPhotonEta);
+      hsubleadingPhoPhi_beforecuts->Fill(subleadingPhotonPhi);
+
+    }
+
+    bool passedAllCuts = ( numFinalState >= 2 && (leadingPhotonPt > leadingPtCut) && (subleadingPhotonPt > subleadingPtCut) && (fabs(leadingPhotonEta) < 1.4442) && (fabs(subleadingPhotonEta) < 1.4442) );
+
+    if( passedAllCuts ){
 
         numEventsPassingCuts++;
 
@@ -304,6 +325,13 @@ DiphotonAnalyzer::beginJob()
     hsubleadingPhoPt = fs->make<TH1D>("hsubleadingPhoPt","Subleading Photon pT",1800.,0,1800.);
     hsubleadingPhoEta = fs->make<TH1D>("hsubleadingPhoEta","Subleading Photon #eta",100,-1.5,1.5);
     hsubleadingPhoPhi = fs->make<TH1D>("hsubleadingPhoPhi","Subleading Photon #varphi",100,-3.1416,3.1416);
+
+    hleadingPhoPt_beforecuts = fs->make<TH1D>("hleadingPhoPt_beforecuts","Leading Photon pT",1800.,0,1800.);
+    hleadingPhoEta_beforecuts = fs->make<TH1D>("hleadingPhoEta_beforecuts","Leading Photon #eta",400,-6.,6.);
+    hleadingPhoPhi_beforecuts = fs->make<TH1D>("hleadingPhoPhi_beforecuts","Leading Photon #varphi",100,-3.1416,3.1416);
+    hsubleadingPhoPt_beforecuts = fs->make<TH1D>("hsubleadingPhoPt_beforecuts","Subleading Photon pT",1800.,0,1800.);
+    hsubleadingPhoEta_beforecuts = fs->make<TH1D>("hsubleadingPhoEta_beforecuts","Subleading Photon #eta",400,-6.,6.);
+    hsubleadingPhoPhi_beforecuts = fs->make<TH1D>("hsubleadingPhoPhi_beforecuts","Subleading Photon #varphi",100,-3.1416,3.1416);
 
     allPhotonPt = fs->make<TH1D>("allPhotonPt","",1800,0,1800.);
     allPhotonEta = fs->make<TH1D>("allPhotonEta","",100,-6.,6.);
