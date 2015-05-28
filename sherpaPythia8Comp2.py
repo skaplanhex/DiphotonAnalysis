@@ -14,21 +14,11 @@ for line in f:
     xsDict[temp] = float(s[4])
 f.close()
 
-faccep = open("acceptances_p8sherpacomparison2.txt",'r')
-accepDict={}
-for line in faccep:
-    s = line.split()
-    temp = "%s %s %s %s"%( s[0],s[1],s[2],s[3] )
-    accepDict[temp] = float(s[4])
-faccep.close()
 def findXs(gen,sqrts,ms,m):
 
     tempString="%s %s %s %s"%( str(gen),str(sqrts),str(ms),str(m) )
-    trueXS = xsDict[tempString]
-    accep = accepDict[tempString]
-    accep = 1. # don't weight the xs by the offline acceptance, this doesn't make sense.
-    actualXS = accep*trueXS
-    return actualXS
+    # trueXS = xsDict[tempString]
+    return xsDict[tempString]
 
 def subtractHistos(sigplusbkg,bkg):
     temp = sigplusbkg.Clone()
@@ -101,6 +91,18 @@ import distroConcatenator as dc
 
 #p8
 
+info2500p8low_8TeV = ["ADDdiPhoton_8TeV_LambdaT2500_mHat200-750.root","analyze/hggMass",findXs("p8",8,2500,"200-750"),100000]
+info2500p8mid_8TeV = ["ADDdiPhoton_8TeV_LambdaT2500_mHat750-2000.root","analyze/hggMass",findXs("p8",8,2500,"750-2000"),100000]
+info2500p8high_8TeV = ["ADDdiPhoton_8TeV_LambdaT2500_mHat2000-lt.root","analyze/hggMass",findXs("p8",8,2500,"2000-lt"),100000]
+info2500p8_8TeV = [info2500p8low_8TeV,info2500p8mid_8TeV,info2500p8high_8TeV]
+hist2500p8_8TeV = dc.concatenate(info2500p8_8TeV,"hist2500p8_8TeV",LUMI)
+
+info2500p8low_13TeV = ["ADDdiPhoton_13TeV_LambdaT2500_mHat200-750.root","analyze/hggMass",findXs("p8",13,2500,"200-750"),100000]
+info2500p8mid_13TeV = ["ADDdiPhoton_13TeV_LambdaT2500_mHat750-2000.root","analyze/hggMass",findXs("p8",13,2500,"750-2000"),100000]
+info2500p8high_13TeV = ["ADDdiPhoton_13TeV_LambdaT2500_mHat2000-lt.root","analyze/hggMass",findXs("p8",13,2500,"2000-lt"),100000]
+info2500p8_13TeV = [info2500p8low_13TeV,info2500p8mid_13TeV,info2500p8high_13TeV]
+hist2500p8_13TeV = dc.concatenate(info2500p8_13TeV,"hist2500p8_13TeV",LUMI)
+
 info3000p8low_8TeV = ["ADDdiPhoton_8TeV_LambdaT3000_mHat200-750.root","analyze/hggMass",findXs("p8",8,3000,"200-750"),100000]
 info3000p8mid_8TeV = ["ADDdiPhoton_8TeV_LambdaT3000_mHat750-2000.root","analyze/hggMass",findXs("p8",8,3000,"750-2000"),100000]
 info3000p8high_8TeV = ["ADDdiPhoton_8TeV_LambdaT3000_mHat2000-lt.root","analyze/hggMass",findXs("p8",8,3000,"2000-lt"),100000]
@@ -140,6 +142,18 @@ hist100000p8_13TeV = dc.concatenate(info100000p8_13TeV,"hist100000p8_13TeV",LUMI
 
 # Sherpa
 
+info2500sherpalow_8TeV = ["ADDdiPhoton_sherpa_8TeV_KK1_NED4_MS2500_MGG200-750.root","analyze/hggMass",findXs("sherpa",8,2500,"200-750"),100000]
+info2500sherpamid_8TeV = ["ADDdiPhoton_sherpa_8TeV_KK1_NED4_MS2500_MGG750-2000.root","analyze/hggMass",findXs("sherpa",8,2500,"750-2000"),100000]
+info2500sherpahigh_8TeV = ["ADDdiPhoton_sherpa_8TeV_KK1_NED4_MS2500_MGG2000-ms.root","analyze/hggMass",findXs("sherpa",8,2500,"2000-ms"),100000]
+info2500sherpa_8TeV = [info2500sherpalow_8TeV,info2500sherpamid_8TeV,info2500sherpahigh_8TeV]
+hist2500sherpa_8TeV = dc.concatenate(info2500sherpa_8TeV,"hist2500sherpa_8TeV",LUMI)
+
+info2500sherpalow_13TeV = ["ADDdiPhoton_sherpa_13TeV_KK1_NED4_MS2500_MGG200-750.root","analyze/hggMass",findXs("sherpa",13,2500,"200-750"),100000]
+info2500sherpamid_13TeV = ["ADDdiPhoton_sherpa_13TeV_KK1_NED4_MS2500_MGG750-2000.root","analyze/hggMass",findXs("sherpa",13,2500,"750-2000"),100000]
+info2500sherpahigh_13TeV = ["ADDdiPhoton_sherpa_13TeV_KK1_NED4_MS2500_MGG2000-ms.root","analyze/hggMass",findXs("sherpa",13,2500,"2000-ms"),100000]
+info2500sherpa_13TeV = [info2500sherpalow_13TeV,info2500sherpamid_13TeV,info2500sherpahigh_13TeV]
+hist2500sherpa_13TeV = dc.concatenate(info2500sherpa_13TeV,"hist2500sherpa_13TeV",LUMI)
+
 info3000sherpalow_8TeV = ["ADDdiPhoton_sherpa_8TeV_KK1_NED4_MS3000_MGG200-750.root","analyze/hggMass",findXs("sherpa",8,3000,"200-750"),100000]
 info3000sherpamid_8TeV = ["ADDdiPhoton_sherpa_8TeV_KK1_NED4_MS3000_MGG750-2000.root","analyze/hggMass",findXs("sherpa",8,3000,"750-2000"),100000]
 info3000sherpahigh_8TeV = ["ADDdiPhoton_sherpa_8TeV_KK1_NED4_MS3000_MGG2000-ms.root","analyze/hggMass",findXs("sherpa",8,3000,"2000-ms"),100000]
@@ -176,11 +190,17 @@ info100000sherpahigh_13TeV = ["ADDdiPhoton_sherpa_13TeV_KK1_NED4_MS100000_MGG200
 info100000sherpa_13TeV = [info100000sherpalow_13TeV,info100000sherpamid_13TeV,info100000sherpahigh_13TeV]
 hist100000sherpa_13TeV = dc.concatenate(info100000sherpa_13TeV,"hist100000sherpa_13TeV",LUMI)
 
+sighist2500p8_8TeV = subtractHistos(hist2500p8_8TeV,hist100000p8_8TeV)
+sighist2500p8_13TeV = subtractHistos(hist2500p8_13TeV,hist100000p8_13TeV)
+
 sighist3000p8_8TeV = subtractHistos(hist3000p8_8TeV,hist100000p8_8TeV)
 sighist3000p8_13TeV = subtractHistos(hist3000p8_13TeV,hist100000p8_13TeV)
 
 sighist4000p8_8TeV = subtractHistos(hist4000p8_8TeV,hist100000p8_8TeV)
 sighist4000p8_13TeV = subtractHistos(hist4000p8_13TeV,hist100000p8_13TeV)
+
+sighist2500sherpa_8TeV = subtractHistos(hist2500sherpa_8TeV,hist100000sherpa_8TeV)
+sighist2500sherpa_13TeV = subtractHistos(hist2500sherpa_13TeV,hist100000sherpa_13TeV)
 
 sighist3000sherpa_8TeV = subtractHistos(hist3000sherpa_8TeV,hist100000sherpa_8TeV)
 sighist3000sherpa_13TeV = subtractHistos(hist3000sherpa_13TeV,hist100000sherpa_13TeV)
@@ -188,11 +208,15 @@ sighist3000sherpa_13TeV = subtractHistos(hist3000sherpa_13TeV,hist100000sherpa_1
 sighist4000sherpa_8TeV = subtractHistos(hist4000sherpa_8TeV,hist100000sherpa_8TeV)
 sighist4000sherpa_13TeV = subtractHistos(hist4000sherpa_13TeV,hist100000sherpa_13TeV)
 
+sigcomp2500_8TeV = divideHistos(sighist2500sherpa_8TeV,sighist2500p8_8TeV)
 sigcomp3000_8TeV = divideHistos(sighist3000sherpa_8TeV,sighist3000p8_8TeV)
 sigcomp4000_8TeV = divideHistos(sighist4000sherpa_8TeV,sighist4000p8_8TeV)
+sigcomp2500_13TeV = divideHistos(sighist2500sherpa_13TeV,sighist2500p8_13TeV)
 sigcomp3000_13TeV = divideHistos(sighist3000sherpa_13TeV,sighist3000p8_13TeV)
 sigcomp4000_13TeV = divideHistos(sighist4000sherpa_13TeV,sighist4000p8_13TeV)
 
+plotHisto(sigcomp2500_8TeV,"","p8sherpacomp_8TeV_sigratio_ms2500.pdf",0.,3100.,"M_{#gamma#gamma} (GeV)","Sherpa/Pythia8",False)
+plotHisto(sigcomp2500_13TeV,"","p8sherpacomp_13TeV_sigratio_ms2500.pdf",0.,3100.,"M_{#gamma#gamma} (GeV)","Sherpa/Pythia8",False)
 plotHisto(sigcomp3000_8TeV,"","p8sherpacomp_8TeV_sigratio_ms3000.pdf",0.,3100.,"M_{#gamma#gamma} (GeV)","Sherpa/Pythia8",False)
 plotHisto(sigcomp3000_13TeV,"","p8sherpacomp_13TeV_sigratio_ms3000.pdf",0.,3100.,"M_{#gamma#gamma} (GeV)","Sherpa/Pythia8",False)
 plotHisto(sigcomp4000_8TeV,"","p8sherpacomp_8TeV_sigratio_ms4000.pdf",0.,4100.,"M_{#gamma#gamma} (GeV)","Sherpa/Pythia8",False)
@@ -219,6 +243,11 @@ plotHisto(sigcomp4000_13TeV,"","p8sherpacomp_13TeV_sigratio_ms4000.pdf",0.,4100.
 #     h.Write()
 # newtfile.Close()
 
+plotTwoHistos(hist2500p8_8TeV,"Pythia 8 (8 TeV)",hist2500sherpa_8TeV,"Sherpa (8 TeV)","p8sherpacomp_8TeV_ms2500.pdf",0.,3100.,True,"M_{#gamma#gamma} (GeV)")
+plotTwoHistos(sighist2500p8_8TeV,"Pythia 8 (8 TeV)",sighist2500sherpa_8TeV,"Sherpa (8 TeV)","p8sherpacomp_8TeV_sig_ms2500.pdf",0.,3100.,False,"M_{#gamma#gamma} (GeV)")
+plotTwoHistos(hist2500p8_13TeV,"Pythia 8 (13 TeV)",hist2500sherpa_13TeV,"Sherpa (13 TeV)","p8sherpacomp_13TeV_ms2500.pdf",0.,3100.,True,"M_{#gamma#gamma} (GeV)")
+plotTwoHistos(sighist2500p8_13TeV,"Pythia 8 (13 TeV)",sighist2500sherpa_13TeV,"Sherpa (13 TeV)","p8sherpacomp_13TeV_sig_ms2500.pdf",0.,3100.,False,"M_{#gamma#gamma} (GeV)")
+
 plotTwoHistos(hist3000p8_8TeV,"Pythia 8 (8 TeV)",hist3000sherpa_8TeV,"Sherpa (8 TeV)","p8sherpacomp_8TeV_ms3000.pdf",0.,3100.,True,"M_{#gamma#gamma} (GeV)")
 plotTwoHistos(sighist3000p8_8TeV,"Pythia 8 (8 TeV)",sighist3000sherpa_8TeV,"Sherpa (8 TeV)","p8sherpacomp_8TeV_sig_ms3000.pdf",0.,3100.,False,"M_{#gamma#gamma} (GeV)")
 plotTwoHistos(hist3000p8_13TeV,"Pythia 8 (13 TeV)",hist3000sherpa_13TeV,"Sherpa (13 TeV)","p8sherpacomp_13TeV_ms3000.pdf",0.,3100.,True,"M_{#gamma#gamma} (GeV)")
@@ -234,6 +263,18 @@ plotTwoHistos(hist100000p8_13TeV,"Pythia 8 (13 TeV)",hist100000sherpa_13TeV,"She
 
 
 # leading pT
+
+info2500p8low_8TeV_pT0_aftercuts = ["ADDdiPhoton_8TeV_LambdaT2500_mHat200-750.root","analyze/hleadingPhoPt",findXs("p8",8,2500,"200-750"),100000]
+info2500p8mid_8TeV_pT0_aftercuts = ["ADDdiPhoton_8TeV_LambdaT2500_mHat750-2000.root","analyze/hleadingPhoPt",findXs("p8",8,2500,"750-2000"),100000]
+info2500p8high_8TeV_pT0_aftercuts = ["ADDdiPhoton_8TeV_LambdaT2500_mHat2000-lt.root","analyze/hleadingPhoPt",findXs("p8",8,2500,"2000-lt"),100000]
+info2500p8_8TeV_pT0_aftercuts = [info2500p8low_8TeV_pT0_aftercuts,info2500p8mid_8TeV_pT0_aftercuts,info2500p8high_8TeV_pT0_aftercuts]
+hist2500p8_8TeV_pT0_aftercuts = dc.concatenate(info2500p8_8TeV_pT0_aftercuts,"hist2500p8_8TeV_pT0_aftercuts",LUMI)
+
+info2500p8low_13TeV_pT0_aftercuts = ["ADDdiPhoton_13TeV_LambdaT2500_mHat200-750.root","analyze/hleadingPhoPt",findXs("p8",13,2500,"200-750"),100000]
+info2500p8mid_13TeV_pT0_aftercuts = ["ADDdiPhoton_13TeV_LambdaT2500_mHat750-2000.root","analyze/hleadingPhoPt",findXs("p8",13,2500,"750-2000"),100000]
+info2500p8high_13TeV_pT0_aftercuts = ["ADDdiPhoton_13TeV_LambdaT2500_mHat2000-lt.root","analyze/hleadingPhoPt",findXs("p8",13,2500,"2000-lt"),100000]
+info2500p8_13TeV_pT0_aftercuts = [info2500p8low_13TeV_pT0_aftercuts,info2500p8mid_13TeV_pT0_aftercuts,info2500p8high_13TeV_pT0_aftercuts]
+hist2500p8_13TeV_pT0_aftercuts = dc.concatenate(info2500p8_13TeV_pT0_aftercuts,"hist2500p8_13TeV_pT0_aftercuts",LUMI)
 
 info3000p8low_8TeV_pT0_aftercuts = ["ADDdiPhoton_8TeV_LambdaT3000_mHat200-750.root","analyze/hleadingPhoPt",findXs("p8",8,3000,"200-750"),100000]
 info3000p8mid_8TeV_pT0_aftercuts = ["ADDdiPhoton_8TeV_LambdaT3000_mHat750-2000.root","analyze/hleadingPhoPt",findXs("p8",8,3000,"750-2000"),100000]
@@ -273,6 +314,18 @@ hist100000p8_13TeV_pT0_aftercuts = dc.concatenate(info100000p8_13TeV_pT0_aftercu
 
 # Sherpa
 
+info2500sherpalow_8TeV_pT0_aftercuts = ["ADDdiPhoton_sherpa_8TeV_KK1_NED4_MS2500_MGG200-750.root","analyze/hleadingPhoPt",findXs("sherpa",8,2500,"200-750"),100000]
+info2500sherpamid_8TeV_pT0_aftercuts = ["ADDdiPhoton_sherpa_8TeV_KK1_NED4_MS2500_MGG750-2000.root","analyze/hleadingPhoPt",findXs("sherpa",8,2500,"750-2000"),100000]
+info2500sherpahigh_8TeV_pT0_aftercuts = ["ADDdiPhoton_sherpa_8TeV_KK1_NED4_MS2500_MGG2000-ms.root","analyze/hleadingPhoPt",findXs("sherpa",8,2500,"2000-ms"),100000]
+info2500sherpa_8TeV_pT0_aftercuts = [info2500sherpalow_8TeV_pT0_aftercuts,info2500sherpamid_8TeV_pT0_aftercuts,info2500sherpahigh_8TeV_pT0_aftercuts]
+hist2500sherpa_8TeV_pT0_aftercuts = dc.concatenate(info2500sherpa_8TeV_pT0_aftercuts,"hist2500sherpa_8TeV_pT0_aftercuts",LUMI)
+
+info2500sherpalow_13TeV_pT0_aftercuts = ["ADDdiPhoton_sherpa_13TeV_KK1_NED4_MS2500_MGG200-750.root","analyze/hleadingPhoPt",findXs("sherpa",13,2500,"200-750"),100000]
+info2500sherpamid_13TeV_pT0_aftercuts = ["ADDdiPhoton_sherpa_13TeV_KK1_NED4_MS2500_MGG750-2000.root","analyze/hleadingPhoPt",findXs("sherpa",13,2500,"750-2000"),100000]
+info2500sherpahigh_13TeV_pT0_aftercuts = ["ADDdiPhoton_sherpa_13TeV_KK1_NED4_MS2500_MGG2000-ms.root","analyze/hleadingPhoPt",findXs("sherpa",13,2500,"2000-ms"),100000]
+info2500sherpa_13TeV_pT0_aftercuts = [info2500sherpalow_13TeV_pT0_aftercuts,info2500sherpamid_13TeV_pT0_aftercuts,info2500sherpahigh_13TeV_pT0_aftercuts]
+hist2500sherpa_13TeV_pT0_aftercuts = dc.concatenate(info2500sherpa_13TeV_pT0_aftercuts,"hist2500sherpa_13TeV_pT0_aftercuts",LUMI)
+
 info3000sherpalow_8TeV_pT0_aftercuts = ["ADDdiPhoton_sherpa_8TeV_KK1_NED4_MS3000_MGG200-750.root","analyze/hleadingPhoPt",findXs("sherpa",8,3000,"200-750"),100000]
 info3000sherpamid_8TeV_pT0_aftercuts = ["ADDdiPhoton_sherpa_8TeV_KK1_NED4_MS3000_MGG750-2000.root","analyze/hleadingPhoPt",findXs("sherpa",8,3000,"750-2000"),100000]
 info3000sherpahigh_8TeV_pT0_aftercuts = ["ADDdiPhoton_sherpa_8TeV_KK1_NED4_MS3000_MGG2000-ms.root","analyze/hleadingPhoPt",findXs("sherpa",8,3000,"2000-ms"),100000]
@@ -309,6 +362,8 @@ info100000sherpahigh_13TeV_pT0_aftercuts = ["ADDdiPhoton_sherpa_13TeV_KK1_NED4_M
 info100000sherpa_13TeV_pT0_aftercuts = [info100000sherpalow_13TeV_pT0_aftercuts,info100000sherpamid_13TeV_pT0_aftercuts,info100000sherpahigh_13TeV_pT0_aftercuts]
 hist1000sherpa_13TeV_pT0_aftercuts = dc.concatenate(info100000sherpa_13TeV_pT0_aftercuts,"hist100000sherpa_13TeV_pT0_aftercuts",LUMI)
 
+plotTwoHistos(hist2500p8_8TeV_pT0_aftercuts,"Pythia 8 (8 TeV)",hist2500sherpa_8TeV_pT0_aftercuts,"Sherpa (8 TeV)","p8sherpacomp_8TeV_pT0_aftercuts_ms2500.pdf",0.,3100.,True,"Leading Photon pT (GeV)",4)
+plotTwoHistos(hist2500p8_13TeV_pT0_aftercuts,"Pythia 8 (13 TeV)",hist2500sherpa_13TeV_pT0_aftercuts,"Sherpa (13 TeV)","p8sherpacomp_13TeV_pT0_aftercuts_ms2500.pdf",0.,3100.,True,"Leading Photon pT (GeV)",4)
 plotTwoHistos(hist3000p8_8TeV_pT0_aftercuts,"Pythia 8 (8 TeV)",hist3000sherpa_8TeV_pT0_aftercuts,"Sherpa (8 TeV)","p8sherpacomp_8TeV_pT0_aftercuts_ms3000.pdf",0.,3100.,True,"Leading Photon pT (GeV)",4)
 plotTwoHistos(hist3000p8_13TeV_pT0_aftercuts,"Pythia 8 (13 TeV)",hist3000sherpa_13TeV_pT0_aftercuts,"Sherpa (13 TeV)","p8sherpacomp_13TeV_pT0_aftercuts_ms3000.pdf",0.,3100.,True,"Leading Photon pT (GeV)",4)
 
@@ -319,6 +374,18 @@ plotTwoHistos(hist100000p8_8TeV_pT0_aftercuts,"Pythia 8 (8 TeV)",hist100000sherp
 plotTwoHistos(hist100000p8_13TeV_pT0_aftercuts,"Pythia 8 (13 TeV)",hist100000sherpa_13TeV_pT0_aftercuts,"Sherpa (13 TeV)","p8sherpacomp_13TeV_pT0_aftercuts_ms100000.pdf",0.,5600.,True,"Leading Photon pT (GeV)",4)
 
 # subleading pT
+
+info2500p8low_8TeV_pT1_aftercuts = ["ADDdiPhoton_8TeV_LambdaT2500_mHat200-750.root","analyze/hsubleadingPhoPt",findXs("p8",8,2500,"200-750"),100000]
+info2500p8mid_8TeV_pT1_aftercuts = ["ADDdiPhoton_8TeV_LambdaT2500_mHat750-2000.root","analyze/hsubleadingPhoPt",findXs("p8",8,2500,"750-2000"),100000]
+info2500p8high_8TeV_pT1_aftercuts = ["ADDdiPhoton_8TeV_LambdaT2500_mHat2000-lt.root","analyze/hsubleadingPhoPt",findXs("p8",8,2500,"2000-lt"),100000]
+info2500p8_8TeV_pT1_aftercuts = [info2500p8low_8TeV_pT1_aftercuts,info2500p8mid_8TeV_pT1_aftercuts,info2500p8high_8TeV_pT1_aftercuts]
+hist2500p8_8TeV_pT1_aftercuts = dc.concatenate(info2500p8_8TeV_pT1_aftercuts,"hist2500p8_8TeV_pT1_aftercuts",LUMI)
+
+info2500p8low_13TeV_pT1_aftercuts = ["ADDdiPhoton_13TeV_LambdaT2500_mHat200-750.root","analyze/hsubleadingPhoPt",findXs("p8",13,2500,"200-750"),100000]
+info2500p8mid_13TeV_pT1_aftercuts = ["ADDdiPhoton_13TeV_LambdaT2500_mHat750-2000.root","analyze/hsubleadingPhoPt",findXs("p8",13,2500,"750-2000"),100000]
+info2500p8high_13TeV_pT1_aftercuts = ["ADDdiPhoton_13TeV_LambdaT2500_mHat2000-lt.root","analyze/hsubleadingPhoPt",findXs("p8",13,2500,"2000-lt"),100000]
+info2500p8_13TeV_pT1_aftercuts = [info2500p8low_13TeV_pT1_aftercuts,info2500p8mid_13TeV_pT1_aftercuts,info2500p8high_13TeV_pT1_aftercuts]
+hist2500p8_13TeV_pT1_aftercuts = dc.concatenate(info2500p8_13TeV_pT1_aftercuts,"hist2500p8_13TeV_pT1_aftercuts",LUMI)
 
 info3000p8low_8TeV_pT1_aftercuts = ["ADDdiPhoton_8TeV_LambdaT3000_mHat200-750.root","analyze/hsubleadingPhoPt",findXs("p8",8,3000,"200-750"),100000]
 info3000p8mid_8TeV_pT1_aftercuts = ["ADDdiPhoton_8TeV_LambdaT3000_mHat750-2000.root","analyze/hsubleadingPhoPt",findXs("p8",8,3000,"750-2000"),100000]
@@ -358,6 +425,18 @@ hist100000p8_13TeV_pT1_aftercuts = dc.concatenate(info100000p8_13TeV_pT1_aftercu
 
 # Sherpa
 
+info2500sherpalow_8TeV_pT1_aftercuts = ["ADDdiPhoton_sherpa_8TeV_KK1_NED4_MS2500_MGG200-750.root","analyze/hsubleadingPhoPt",findXs("sherpa",8,2500,"200-750"),100000]
+info2500sherpamid_8TeV_pT1_aftercuts = ["ADDdiPhoton_sherpa_8TeV_KK1_NED4_MS2500_MGG750-2000.root","analyze/hsubleadingPhoPt",findXs("sherpa",8,2500,"750-2000"),100000]
+info2500sherpahigh_8TeV_pT1_aftercuts = ["ADDdiPhoton_sherpa_8TeV_KK1_NED4_MS2500_MGG2000-ms.root","analyze/hsubleadingPhoPt",findXs("sherpa",8,2500,"2000-ms"),100000]
+info2500sherpa_8TeV_pT1_aftercuts = [info2500sherpalow_8TeV_pT1_aftercuts,info2500sherpamid_8TeV_pT1_aftercuts,info2500sherpahigh_8TeV_pT1_aftercuts]
+hist2500sherpa_8TeV_pT1_aftercuts = dc.concatenate(info2500sherpa_8TeV_pT1_aftercuts,"hist2500sherpa_8TeV_pT1_aftercuts",LUMI)
+
+info2500sherpalow_13TeV_pT1_aftercuts = ["ADDdiPhoton_sherpa_13TeV_KK1_NED4_MS2500_MGG200-750.root","analyze/hsubleadingPhoPt",findXs("sherpa",13,2500,"200-750"),100000]
+info2500sherpamid_13TeV_pT1_aftercuts = ["ADDdiPhoton_sherpa_13TeV_KK1_NED4_MS2500_MGG750-2000.root","analyze/hsubleadingPhoPt",findXs("sherpa",13,2500,"750-2000"),100000]
+info2500sherpahigh_13TeV_pT1_aftercuts = ["ADDdiPhoton_sherpa_13TeV_KK1_NED4_MS2500_MGG2000-ms.root","analyze/hsubleadingPhoPt",findXs("sherpa",13,2500,"2000-ms"),100000]
+info2500sherpa_13TeV_pT1_aftercuts = [info2500sherpalow_13TeV_pT1_aftercuts,info2500sherpamid_13TeV_pT1_aftercuts,info2500sherpahigh_13TeV_pT1_aftercuts]
+hist2500sherpa_13TeV_pT1_aftercuts = dc.concatenate(info2500sherpa_13TeV_pT1_aftercuts,"hist2500sherpa_13TeV_pT1_aftercuts",LUMI)
+
 info3000sherpalow_8TeV_pT1_aftercuts = ["ADDdiPhoton_sherpa_8TeV_KK1_NED4_MS3000_MGG200-750.root","analyze/hsubleadingPhoPt",findXs("sherpa",8,3000,"200-750"),100000]
 info3000sherpamid_8TeV_pT1_aftercuts = ["ADDdiPhoton_sherpa_8TeV_KK1_NED4_MS3000_MGG750-2000.root","analyze/hsubleadingPhoPt",findXs("sherpa",8,3000,"750-2000"),100000]
 info3000sherpahigh_8TeV_pT1_aftercuts = ["ADDdiPhoton_sherpa_8TeV_KK1_NED4_MS3000_MGG2000-ms.root","analyze/hsubleadingPhoPt",findXs("sherpa",8,3000,"2000-ms"),100000]
@@ -394,6 +473,8 @@ info100000sherpahigh_13TeV_pT1_aftercuts = ["ADDdiPhoton_sherpa_13TeV_KK1_NED4_M
 info100000sherpa_13TeV_pT1_aftercuts = [info100000sherpalow_13TeV_pT1_aftercuts,info100000sherpamid_13TeV_pT1_aftercuts,info100000sherpahigh_13TeV_pT1_aftercuts]
 hist1000sherpa_13TeV_pT1_aftercuts = dc.concatenate(info100000sherpa_13TeV_pT1_aftercuts,"hist100000sherpa_13TeV_pT1_aftercuts",LUMI)
 
+plotTwoHistos(hist2500p8_8TeV_pT1_aftercuts,"Pythia 8 (8 TeV)",hist2500sherpa_8TeV_pT1_aftercuts,"Sherpa (8 TeV)","p8sherpacomp_8TeV_pT1_aftercuts_ms2500.pdf",0.,3100.,True,"Subleading Photon pT (GeV)",4)
+plotTwoHistos(hist2500p8_13TeV_pT1_aftercuts,"Pythia 8 (13 TeV)",hist2500sherpa_13TeV_pT1_aftercuts,"Sherpa (13 TeV)","p8sherpacomp_13TeV_pT1_aftercuts_ms2500.pdf",0.,3100.,True,"Subleading Photon pT (GeV)",4)
 plotTwoHistos(hist3000p8_8TeV_pT1_aftercuts,"Pythia 8 (8 TeV)",hist3000sherpa_8TeV_pT1_aftercuts,"Sherpa (8 TeV)","p8sherpacomp_8TeV_pT1_aftercuts_ms3000.pdf",0.,3100.,True,"Subleading Photon pT (GeV)",4)
 plotTwoHistos(hist3000p8_13TeV_pT1_aftercuts,"Pythia 8 (13 TeV)",hist3000sherpa_13TeV_pT1_aftercuts,"Sherpa (13 TeV)","p8sherpacomp_13TeV_pT1_aftercuts_ms3000.pdf",0.,3100.,True,"Subleading Photon pT (GeV)",4)
 
@@ -404,6 +485,18 @@ plotTwoHistos(hist100000p8_8TeV_pT1_aftercuts,"Pythia 8 (8 TeV)",hist100000sherp
 plotTwoHistos(hist100000p8_13TeV_pT1_aftercuts,"Pythia 8 (13 TeV)",hist100000sherpa_13TeV_pT1_aftercuts,"Sherpa (13 TeV)","p8sherpacomp_13TeV_pT1_aftercuts_ms100000.pdf",0.,5600.,True,"Subleading Photon pT (GeV)",4)
 
 #leading eta
+
+info2500p8low_8TeV_eta0_aftercuts = ["ADDdiPhoton_8TeV_LambdaT2500_mHat200-750.root","analyze/hleadingPhoEta",findXs("p8",8,2500,"200-750"),100000]
+info2500p8mid_8TeV_eta0_aftercuts = ["ADDdiPhoton_8TeV_LambdaT2500_mHat750-2000.root","analyze/hleadingPhoEta",findXs("p8",8,2500,"750-2000"),100000]
+info2500p8high_8TeV_eta0_aftercuts = ["ADDdiPhoton_8TeV_LambdaT2500_mHat2000-lt.root","analyze/hleadingPhoEta",findXs("p8",8,2500,"2000-lt"),100000]
+info2500p8_8TeV_eta0_aftercuts = [info2500p8low_8TeV_eta0_aftercuts,info2500p8mid_8TeV_eta0_aftercuts,info2500p8high_8TeV_eta0_aftercuts]
+hist2500p8_8TeV_eta0_aftercuts = dc.concatenate(info2500p8_8TeV_eta0_aftercuts,"hist2500p8_8TeV_eta0_aftercuts",LUMI)
+
+info2500p8low_13TeV_eta0_aftercuts = ["ADDdiPhoton_13TeV_LambdaT2500_mHat200-750.root","analyze/hleadingPhoEta",findXs("p8",13,2500,"200-750"),100000]
+info2500p8mid_13TeV_eta0_aftercuts = ["ADDdiPhoton_13TeV_LambdaT2500_mHat750-2000.root","analyze/hleadingPhoEta",findXs("p8",13,2500,"750-2000"),100000]
+info2500p8high_13TeV_eta0_aftercuts = ["ADDdiPhoton_13TeV_LambdaT2500_mHat2000-lt.root","analyze/hleadingPhoEta",findXs("p8",13,2500,"2000-lt"),100000]
+info2500p8_13TeV_eta0_aftercuts = [info2500p8low_13TeV_eta0_aftercuts,info2500p8mid_13TeV_eta0_aftercuts,info2500p8high_13TeV_eta0_aftercuts]
+hist2500p8_13TeV_eta0_aftercuts = dc.concatenate(info2500p8_13TeV_eta0_aftercuts,"hist2500p8_13TeV_eta0_aftercuts",LUMI)
 
 info3000p8low_8TeV_eta0_aftercuts = ["ADDdiPhoton_8TeV_LambdaT3000_mHat200-750.root","analyze/hleadingPhoEta",findXs("p8",8,3000,"200-750"),100000]
 info3000p8mid_8TeV_eta0_aftercuts = ["ADDdiPhoton_8TeV_LambdaT3000_mHat750-2000.root","analyze/hleadingPhoEta",findXs("p8",8,3000,"750-2000"),100000]
@@ -443,6 +536,18 @@ hist100000p8_13TeV_eta0_aftercuts = dc.concatenate(info100000p8_13TeV_eta0_after
 
 # Sherpa
 
+info2500sherpalow_8TeV_eta0_aftercuts = ["ADDdiPhoton_sherpa_8TeV_KK1_NED4_MS2500_MGG200-750.root","analyze/hleadingPhoEta",findXs("sherpa",8,2500,"200-750"),100000]
+info2500sherpamid_8TeV_eta0_aftercuts = ["ADDdiPhoton_sherpa_8TeV_KK1_NED4_MS2500_MGG750-2000.root","analyze/hleadingPhoEta",findXs("sherpa",8,2500,"750-2000"),100000]
+info2500sherpahigh_8TeV_eta0_aftercuts = ["ADDdiPhoton_sherpa_8TeV_KK1_NED4_MS2500_MGG2000-ms.root","analyze/hleadingPhoEta",findXs("sherpa",8,2500,"2000-ms"),100000]
+info2500sherpa_8TeV_eta0_aftercuts = [info2500sherpalow_8TeV_eta0_aftercuts,info2500sherpamid_8TeV_eta0_aftercuts,info2500sherpahigh_8TeV_eta0_aftercuts]
+hist2500sherpa_8TeV_eta0_aftercuts = dc.concatenate(info2500sherpa_8TeV_eta0_aftercuts,"hist2500sherpa_8TeV_eta0_aftercuts",LUMI)
+
+info2500sherpalow_13TeV_eta0_aftercuts = ["ADDdiPhoton_sherpa_13TeV_KK1_NED4_MS2500_MGG200-750.root","analyze/hleadingPhoEta",findXs("sherpa",13,2500,"200-750"),100000]
+info2500sherpamid_13TeV_eta0_aftercuts = ["ADDdiPhoton_sherpa_13TeV_KK1_NED4_MS2500_MGG750-2000.root","analyze/hleadingPhoEta",findXs("sherpa",13,2500,"750-2000"),100000]
+info2500sherpahigh_13TeV_eta0_aftercuts = ["ADDdiPhoton_sherpa_13TeV_KK1_NED4_MS2500_MGG2000-ms.root","analyze/hleadingPhoEta",findXs("sherpa",13,2500,"2000-ms"),100000]
+info2500sherpa_13TeV_eta0_aftercuts = [info2500sherpalow_13TeV_eta0_aftercuts,info2500sherpamid_13TeV_eta0_aftercuts,info2500sherpahigh_13TeV_eta0_aftercuts]
+hist2500sherpa_13TeV_eta0_aftercuts = dc.concatenate(info2500sherpa_13TeV_eta0_aftercuts,"hist2500sherpa_13TeV_eta0_aftercuts",LUMI)
+
 info3000sherpalow_8TeV_eta0_aftercuts = ["ADDdiPhoton_sherpa_8TeV_KK1_NED4_MS3000_MGG200-750.root","analyze/hleadingPhoEta",findXs("sherpa",8,3000,"200-750"),100000]
 info3000sherpamid_8TeV_eta0_aftercuts = ["ADDdiPhoton_sherpa_8TeV_KK1_NED4_MS3000_MGG750-2000.root","analyze/hleadingPhoEta",findXs("sherpa",8,3000,"750-2000"),100000]
 info3000sherpahigh_8TeV_eta0_aftercuts = ["ADDdiPhoton_sherpa_8TeV_KK1_NED4_MS3000_MGG2000-ms.root","analyze/hleadingPhoEta",findXs("sherpa",8,3000,"2000-ms"),100000]
@@ -479,6 +584,8 @@ info100000sherpahigh_13TeV_eta0_aftercuts = ["ADDdiPhoton_sherpa_13TeV_KK1_NED4_
 info100000sherpa_13TeV_eta0_aftercuts = [info100000sherpalow_13TeV_eta0_aftercuts,info100000sherpamid_13TeV_eta0_aftercuts,info100000sherpahigh_13TeV_eta0_aftercuts]
 hist1000sherpa_13TeV_eta0_aftercuts = dc.concatenate(info100000sherpa_13TeV_eta0_aftercuts,"hist100000sherpa_13TeV_eta0_aftercuts",LUMI)
 
+plotTwoHistos(hist2500p8_8TeV_eta0_aftercuts,"Pythia 8 (8 TeV)",hist2500sherpa_8TeV_eta0_aftercuts,"Sherpa (8 TeV)","p8sherpacomp_8TeV_eta0_aftercuts_ms2500.pdf",-6.,6.,False,"Leading Photon #eta",2)
+plotTwoHistos(hist2500p8_13TeV_eta0_aftercuts,"Pythia 8 (13 TeV)",hist2500sherpa_13TeV_eta0_aftercuts,"Sherpa (13 TeV)","p8sherpacomp_13TeV_eta0_aftercuts_ms2500.pdf",-6.,6.,False,"Leading Photon #eta",2)
 plotTwoHistos(hist3000p8_8TeV_eta0_aftercuts,"Pythia 8 (8 TeV)",hist3000sherpa_8TeV_eta0_aftercuts,"Sherpa (8 TeV)","p8sherpacomp_8TeV_eta0_aftercuts_ms3000.pdf",-6.,6.,False,"Leading Photon #eta",2)
 plotTwoHistos(hist3000p8_13TeV_eta0_aftercuts,"Pythia 8 (13 TeV)",hist3000sherpa_13TeV_eta0_aftercuts,"Sherpa (13 TeV)","p8sherpacomp_13TeV_eta0_aftercuts_ms3000.pdf",-6.,6.,False,"Leading Photon #eta",2)
 
@@ -489,6 +596,18 @@ plotTwoHistos(hist100000p8_8TeV_eta0_aftercuts,"Pythia 8 (8 TeV)",hist100000sher
 plotTwoHistos(hist100000p8_13TeV_eta0_aftercuts,"Pythia 8 (13 TeV)",hist100000sherpa_13TeV_eta0_aftercuts,"Sherpa (13 TeV)","p8sherpacomp_13TeV_eta0_aftercuts_ms100000.pdf",-6.,6.,False,"Leading Photon #eta",2)
 
 # subleading eta
+
+info2500p8low_8TeV_eta1_aftercuts = ["ADDdiPhoton_8TeV_LambdaT2500_mHat200-750.root","analyze/hsubleadingPhoEta",findXs("p8",8,2500,"200-750"),100000]
+info2500p8mid_8TeV_eta1_aftercuts = ["ADDdiPhoton_8TeV_LambdaT2500_mHat750-2000.root","analyze/hsubleadingPhoEta",findXs("p8",8,2500,"750-2000"),100000]
+info2500p8high_8TeV_eta1_aftercuts = ["ADDdiPhoton_8TeV_LambdaT2500_mHat2000-lt.root","analyze/hsubleadingPhoEta",findXs("p8",8,2500,"2000-lt"),100000]
+info2500p8_8TeV_eta1_aftercuts = [info2500p8low_8TeV_eta1_aftercuts,info2500p8mid_8TeV_eta1_aftercuts,info2500p8high_8TeV_eta1_aftercuts]
+hist2500p8_8TeV_eta1_aftercuts = dc.concatenate(info2500p8_8TeV_eta1_aftercuts,"hist2500p8_8TeV_eta1_aftercuts",LUMI)
+
+info2500p8low_13TeV_eta1_aftercuts = ["ADDdiPhoton_13TeV_LambdaT2500_mHat200-750.root","analyze/hsubleadingPhoEta",findXs("p8",13,2500,"200-750"),100000]
+info2500p8mid_13TeV_eta1_aftercuts = ["ADDdiPhoton_13TeV_LambdaT2500_mHat750-2000.root","analyze/hsubleadingPhoEta",findXs("p8",13,2500,"750-2000"),100000]
+info2500p8high_13TeV_eta1_aftercuts = ["ADDdiPhoton_13TeV_LambdaT2500_mHat2000-lt.root","analyze/hsubleadingPhoEta",findXs("p8",13,2500,"2000-lt"),100000]
+info2500p8_13TeV_eta1_aftercuts = [info2500p8low_13TeV_eta1_aftercuts,info2500p8mid_13TeV_eta1_aftercuts,info2500p8high_13TeV_eta1_aftercuts]
+hist2500p8_13TeV_eta1_aftercuts = dc.concatenate(info2500p8_13TeV_eta1_aftercuts,"hist2500p8_13TeV_eta1_aftercuts",LUMI)
 
 info3000p8low_8TeV_eta1_aftercuts = ["ADDdiPhoton_8TeV_LambdaT3000_mHat200-750.root","analyze/hsubleadingPhoEta",findXs("p8",8,3000,"200-750"),100000]
 info3000p8mid_8TeV_eta1_aftercuts = ["ADDdiPhoton_8TeV_LambdaT3000_mHat750-2000.root","analyze/hsubleadingPhoEta",findXs("p8",8,3000,"750-2000"),100000]
@@ -528,6 +647,18 @@ hist100000p8_13TeV_eta1_aftercuts = dc.concatenate(info100000p8_13TeV_eta1_after
 
 # Sherpa
 
+info2500sherpalow_8TeV_eta1_aftercuts = ["ADDdiPhoton_sherpa_8TeV_KK1_NED4_MS2500_MGG200-750.root","analyze/hsubleadingPhoEta",findXs("sherpa",8,2500,"200-750"),100000]
+info2500sherpamid_8TeV_eta1_aftercuts = ["ADDdiPhoton_sherpa_8TeV_KK1_NED4_MS2500_MGG750-2000.root","analyze/hsubleadingPhoEta",findXs("sherpa",8,2500,"750-2000"),100000]
+info2500sherpahigh_8TeV_eta1_aftercuts = ["ADDdiPhoton_sherpa_8TeV_KK1_NED4_MS2500_MGG2000-ms.root","analyze/hsubleadingPhoEta",findXs("sherpa",8,2500,"2000-ms"),100000]
+info2500sherpa_8TeV_eta1_aftercuts = [info2500sherpalow_8TeV_eta1_aftercuts,info2500sherpamid_8TeV_eta1_aftercuts,info2500sherpahigh_8TeV_eta1_aftercuts]
+hist2500sherpa_8TeV_eta1_aftercuts = dc.concatenate(info2500sherpa_8TeV_eta1_aftercuts,"hist2500sherpa_8TeV_eta1_aftercuts",LUMI)
+
+info2500sherpalow_13TeV_eta1_aftercuts = ["ADDdiPhoton_sherpa_13TeV_KK1_NED4_MS2500_MGG200-750.root","analyze/hsubleadingPhoEta",findXs("sherpa",13,2500,"200-750"),100000]
+info2500sherpamid_13TeV_eta1_aftercuts = ["ADDdiPhoton_sherpa_13TeV_KK1_NED4_MS2500_MGG750-2000.root","analyze/hsubleadingPhoEta",findXs("sherpa",13,2500,"750-2000"),100000]
+info2500sherpahigh_13TeV_eta1_aftercuts = ["ADDdiPhoton_sherpa_13TeV_KK1_NED4_MS2500_MGG2000-ms.root","analyze/hsubleadingPhoEta",findXs("sherpa",13,2500,"2000-ms"),100000]
+info2500sherpa_13TeV_eta1_aftercuts = [info2500sherpalow_13TeV_eta1_aftercuts,info2500sherpamid_13TeV_eta1_aftercuts,info2500sherpahigh_13TeV_eta1_aftercuts]
+hist2500sherpa_13TeV_eta1_aftercuts = dc.concatenate(info2500sherpa_13TeV_eta1_aftercuts,"hist2500sherpa_13TeV_eta1_aftercuts",LUMI)
+
 info3000sherpalow_8TeV_eta1_aftercuts = ["ADDdiPhoton_sherpa_8TeV_KK1_NED4_MS3000_MGG200-750.root","analyze/hsubleadingPhoEta",findXs("sherpa",8,3000,"200-750"),100000]
 info3000sherpamid_8TeV_eta1_aftercuts = ["ADDdiPhoton_sherpa_8TeV_KK1_NED4_MS3000_MGG750-2000.root","analyze/hsubleadingPhoEta",findXs("sherpa",8,3000,"750-2000"),100000]
 info3000sherpahigh_8TeV_eta1_aftercuts = ["ADDdiPhoton_sherpa_8TeV_KK1_NED4_MS3000_MGG2000-ms.root","analyze/hsubleadingPhoEta",findXs("sherpa",8,3000,"2000-ms"),100000]
@@ -564,6 +695,8 @@ info100000sherpahigh_13TeV_eta1_aftercuts = ["ADDdiPhoton_sherpa_13TeV_KK1_NED4_
 info100000sherpa_13TeV_eta1_aftercuts = [info100000sherpalow_13TeV_eta1_aftercuts,info100000sherpamid_13TeV_eta1_aftercuts,info100000sherpahigh_13TeV_eta1_aftercuts]
 hist1000sherpa_13TeV_eta1_aftercuts = dc.concatenate(info100000sherpa_13TeV_eta1_aftercuts,"hist100000sherpa_13TeV_eta1_aftercuts",LUMI)
 
+plotTwoHistos(hist2500p8_8TeV_eta1_aftercuts,"Pythia 8 (8 TeV)",hist2500sherpa_8TeV_eta1_aftercuts,"Sherpa (8 TeV)","p8sherpacomp_8TeV_eta1_aftercuts_ms2500.pdf",-6.,6.,False,"Subleading Photon #eta",2)
+plotTwoHistos(hist2500p8_13TeV_eta1_aftercuts,"Pythia 8 (13 TeV)",hist2500sherpa_13TeV_eta1_aftercuts,"Sherpa (13 TeV)","p8sherpacomp_13TeV_eta1_aftercuts_ms2500.pdf",-6.,6.,False,"Subleading Photon #eta",2)
 plotTwoHistos(hist3000p8_8TeV_eta1_aftercuts,"Pythia 8 (8 TeV)",hist3000sherpa_8TeV_eta1_aftercuts,"Sherpa (8 TeV)","p8sherpacomp_8TeV_eta1_aftercuts_ms3000.pdf",-6.,6.,False,"Subleading Photon #eta",2)
 plotTwoHistos(hist3000p8_13TeV_eta1_aftercuts,"Pythia 8 (13 TeV)",hist3000sherpa_13TeV_eta1_aftercuts,"Sherpa (13 TeV)","p8sherpacomp_13TeV_eta1_aftercuts_ms3000.pdf",-6.,6.,False,"Subleading Photon #eta",2)
 
