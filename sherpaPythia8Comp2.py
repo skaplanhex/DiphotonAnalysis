@@ -222,6 +222,7 @@ plotHisto(sigcomp3000_13TeV,"","p8sherpacomp_13TeV_sigratio_ms3000.pdf",0.,3100.
 plotHisto(sigcomp4000_8TeV,"","p8sherpacomp_8TeV_sigratio_ms4000.pdf",0.,4100.,"M_{#gamma#gamma} (GeV)","Sherpa/Pythia8",False)
 plotHisto(sigcomp4000_13TeV,"","p8sherpacomp_13TeV_sigratio_ms4000.pdf",0.,4100.,"M_{#gamma#gamma} (GeV)","Sherpa/Pythia8",False)
 
+
 # SetRangeUser for signal histograms
 # for h in (sighist3000p8_8TeV,sighist3000sherpa_8TeV):
 #     # h.GetXaxis().SetRangeUser(750., h.GetBinLowEdge( h.GetNbinsX()+1 ) )
@@ -705,4 +706,153 @@ plotTwoHistos(hist4000p8_13TeV_eta1_aftercuts,"Pythia 8 (13 TeV)",hist4000sherpa
 
 plotTwoHistos(hist100000p8_8TeV_eta1_aftercuts,"Pythia 8 (8 TeV)",hist100000sherpa_8TeV_eta1_aftercuts,"Sherpa (8 TeV)","p8sherpacomp_8TeV_eta1_aftercuts_ms100000.pdf",-6.,6.,False,"Subleading Photon #eta",2)
 plotTwoHistos(hist100000p8_13TeV_eta1_aftercuts,"Pythia 8 (13 TeV)",hist100000sherpa_13TeV_eta1_aftercuts,"Sherpa (13 TeV)","p8sherpacomp_13TeV_eta1_aftercuts_ms100000.pdf",-6.,6.,False,"Subleading Photon #eta",2)
+
+###################################################
+# Make mass distributions for variable histograms
+###################################################
+
+# p8
+
+info2500p8low_8TeV = ["ADDdiPhoton_8TeV_LambdaT2500_mHat200-750.root","analyze/hggMass_varBinning",findXs("p8",8,2500,"200-750"),100000]
+info2500p8mid_8TeV = ["ADDdiPhoton_8TeV_LambdaT2500_mHat750-2000.root","analyze/hggMass_varBinning",findXs("p8",8,2500,"750-2000"),100000]
+info2500p8high_8TeV = ["ADDdiPhoton_8TeV_LambdaT2500_mHat2000-lt.root","analyze/hggMass_varBinning",findXs("p8",8,2500,"2000-lt"),100000]
+info2500p8_8TeV = [info2500p8low_8TeV,info2500p8mid_8TeV,info2500p8high_8TeV]
+hist2500p8_8TeV_varBinning = dc.concatenate(info2500p8_8TeV,"hist2500p8_8TeV_varBinning",LUMI)
+
+info2500p8low_13TeV = ["ADDdiPhoton_13TeV_LambdaT2500_mHat200-750.root","analyze/hggMass_varBinning",findXs("p8",13,2500,"200-750"),100000]
+info2500p8mid_13TeV = ["ADDdiPhoton_13TeV_LambdaT2500_mHat750-2000.root","analyze/hggMass_varBinning",findXs("p8",13,2500,"750-2000"),100000]
+info2500p8high_13TeV = ["ADDdiPhoton_13TeV_LambdaT2500_mHat2000-lt.root","analyze/hggMass_varBinning",findXs("p8",13,2500,"2000-lt"),100000]
+info2500p8_13TeV = [info2500p8low_13TeV,info2500p8mid_13TeV,info2500p8high_13TeV]
+hist2500p8_13TeV_varBinning = dc.concatenate(info2500p8_13TeV,"hist2500p8_13TeV_varBinning",LUMI)
+
+info3000p8low_8TeV = ["ADDdiPhoton_8TeV_LambdaT3000_mHat200-750.root","analyze/hggMass_varBinning",findXs("p8",8,3000,"200-750"),100000]
+info3000p8mid_8TeV = ["ADDdiPhoton_8TeV_LambdaT3000_mHat750-2000.root","analyze/hggMass_varBinning",findXs("p8",8,3000,"750-2000"),100000]
+info3000p8high_8TeV = ["ADDdiPhoton_8TeV_LambdaT3000_mHat2000-lt.root","analyze/hggMass_varBinning",findXs("p8",8,3000,"2000-lt"),100000]
+info3000p8_8TeV = [info3000p8low_8TeV,info3000p8mid_8TeV,info3000p8high_8TeV]
+hist3000p8_8TeV_varBinning = dc.concatenate(info3000p8_8TeV,"hist3000p8_8TeV_varBinning",LUMI)
+
+info3000p8low_13TeV = ["ADDdiPhoton_13TeV_LambdaT3000_mHat200-750.root","analyze/hggMass_varBinning",findXs("p8",13,3000,"200-750"),100000]
+info3000p8mid_13TeV = ["ADDdiPhoton_13TeV_LambdaT3000_mHat750-2000.root","analyze/hggMass_varBinning",findXs("p8",13,3000,"750-2000"),100000]
+info3000p8high_13TeV = ["ADDdiPhoton_13TeV_LambdaT3000_mHat2000-lt.root","analyze/hggMass_varBinning",findXs("p8",13,3000,"2000-lt"),100000]
+info3000p8_13TeV = [info3000p8low_13TeV,info3000p8mid_13TeV,info3000p8high_13TeV]
+hist3000p8_13TeV_varBinning = dc.concatenate(info3000p8_13TeV,"hist3000p8_13TeV_varBinning",LUMI)
+
+info4000p8low_8TeV = ["ADDdiPhoton_8TeV_LambdaT4000_mHat200-750.root","analyze/hggMass_varBinning",findXs("p8",8,4000,"200-750"),100000]
+info4000p8mid_8TeV = ["ADDdiPhoton_8TeV_LambdaT4000_mHat750-2000.root","analyze/hggMass_varBinning",findXs("p8",8,4000,"750-2000"),100000]
+info4000p8high_8TeV = ["ADDdiPhoton_8TeV_LambdaT4000_mHat2000-lt.root","analyze/hggMass_varBinning",findXs("p8",8,4000,"2000-lt"),100000]
+info4000p8_8TeV = [info4000p8low_8TeV,info4000p8mid_8TeV,info4000p8high_8TeV]
+hist4000p8_8TeV_varBinning = dc.concatenate(info4000p8_8TeV,"hist4000p8_8TeV_varBinning",LUMI)
+
+info4000p8low_13TeV = ["ADDdiPhoton_13TeV_LambdaT4000_mHat200-750.root","analyze/hggMass_varBinning",findXs("p8",13,4000,"200-750"),100000]
+info4000p8mid_13TeV = ["ADDdiPhoton_13TeV_LambdaT4000_mHat750-2000.root","analyze/hggMass_varBinning",findXs("p8",13,4000,"750-2000"),100000]
+info4000p8high_13TeV = ["ADDdiPhoton_13TeV_LambdaT4000_mHat2000-lt.root","analyze/hggMass_varBinning",findXs("p8",13,4000,"2000-lt"),100000]
+info4000p8_13TeV = [info4000p8low_13TeV,info4000p8mid_13TeV,info4000p8high_13TeV]
+hist4000p8_13TeV_varBinning = dc.concatenate(info4000p8_13TeV,"hist4000p8_13TeV_varBinning",LUMI)
+
+info100000p8low_8TeV = ["ADDdiPhoton_8TeV_LambdaT100000_mHat200-750.root","analyze/hggMass_varBinning",findXs("p8",8,100000,"200-750"),100000]
+info100000p8mid_8TeV = ["ADDdiPhoton_8TeV_LambdaT100000_mHat750-2000.root","analyze/hggMass_varBinning",findXs("p8",8,100000,"750-2000"),100000]
+info100000p8high_8TeV = ["ADDdiPhoton_8TeV_LambdaT100000_mHat2000-lt.root","analyze/hggMass_varBinning",findXs("p8",8,100000,"2000-lt"),100000]
+info100000p8_8TeV = [info100000p8low_8TeV,info100000p8mid_8TeV,info100000p8high_8TeV]
+hist100000p8_8TeV_varBinning = dc.concatenate(info100000p8_8TeV,"hist100000p8_8TeV_varBinning",LUMI)
+
+info100000p8low_13TeV = ["ADDdiPhoton_13TeV_LambdaT100000_mHat200-750.root","analyze/hggMass_varBinning",findXs("p8",13,100000,"200-750"),100000]
+info100000p8mid_13TeV = ["ADDdiPhoton_13TeV_LambdaT100000_mHat750-2000.root","analyze/hggMass_varBinning",findXs("p8",13,100000,"750-2000"),100000]
+info100000p8high_13TeV = ["ADDdiPhoton_13TeV_LambdaT100000_mHat2000-lt.root","analyze/hggMass_varBinning",findXs("p8",13,100000,"2000-lt"),100000]
+info100000p8_13TeV = [info100000p8low_13TeV,info100000p8mid_13TeV,info100000p8high_13TeV]
+hist100000p8_13TeV_varBinning = dc.concatenate(info100000p8_13TeV,"hist100000p8_13TeV_varBinning",LUMI)
+
+
+# Sherpa
+
+info2500sherpalow_8TeV = ["ADDdiPhoton_sherpa_8TeV_KK1_NED4_MS2500_MGG200-750.root","analyze/hggMass_varBinning",findXs("sherpa",8,2500,"200-750"),100000]
+info2500sherpamid_8TeV = ["ADDdiPhoton_sherpa_8TeV_KK1_NED4_MS2500_MGG750-2000.root","analyze/hggMass_varBinning",findXs("sherpa",8,2500,"750-2000"),100000]
+info2500sherpahigh_8TeV = ["ADDdiPhoton_sherpa_8TeV_KK1_NED4_MS2500_MGG2000-ms.root","analyze/hggMass_varBinning",findXs("sherpa",8,2500,"2000-ms"),100000]
+info2500sherpa_8TeV = [info2500sherpalow_8TeV,info2500sherpamid_8TeV,info2500sherpahigh_8TeV]
+hist2500sherpa_8TeV_varBinning = dc.concatenate(info2500sherpa_8TeV,"hist2500sherpa_8TeV_varBinning",LUMI)
+
+info2500sherpalow_13TeV = ["ADDdiPhoton_sherpa_13TeV_KK1_NED4_MS2500_MGG200-750.root","analyze/hggMass_varBinning",findXs("sherpa",13,2500,"200-750"),100000]
+info2500sherpamid_13TeV = ["ADDdiPhoton_sherpa_13TeV_KK1_NED4_MS2500_MGG750-2000.root","analyze/hggMass_varBinning",findXs("sherpa",13,2500,"750-2000"),100000]
+info2500sherpahigh_13TeV = ["ADDdiPhoton_sherpa_13TeV_KK1_NED4_MS2500_MGG2000-ms.root","analyze/hggMass_varBinning",findXs("sherpa",13,2500,"2000-ms"),100000]
+info2500sherpa_13TeV = [info2500sherpalow_13TeV,info2500sherpamid_13TeV,info2500sherpahigh_13TeV]
+hist2500sherpa_13TeV_varBinning = dc.concatenate(info2500sherpa_13TeV,"hist2500sherpa_13TeV_varBinning",LUMI)
+
+info3000sherpalow_8TeV = ["ADDdiPhoton_sherpa_8TeV_KK1_NED4_MS3000_MGG200-750.root","analyze/hggMass_varBinning",findXs("sherpa",8,3000,"200-750"),100000]
+info3000sherpamid_8TeV = ["ADDdiPhoton_sherpa_8TeV_KK1_NED4_MS3000_MGG750-2000.root","analyze/hggMass_varBinning",findXs("sherpa",8,3000,"750-2000"),100000]
+info3000sherpahigh_8TeV = ["ADDdiPhoton_sherpa_8TeV_KK1_NED4_MS3000_MGG2000-ms.root","analyze/hggMass_varBinning",findXs("sherpa",8,3000,"2000-ms"),100000]
+info3000sherpa_8TeV = [info3000sherpalow_8TeV,info3000sherpamid_8TeV,info3000sherpahigh_8TeV]
+hist3000sherpa_8TeV_varBinning = dc.concatenate(info3000sherpa_8TeV,"hist3000sherpa_8TeV_varBinning",LUMI)
+
+info3000sherpalow_13TeV = ["ADDdiPhoton_sherpa_13TeV_KK1_NED4_MS3000_MGG200-750.root","analyze/hggMass_varBinning",findXs("sherpa",13,3000,"200-750"),100000]
+info3000sherpamid_13TeV = ["ADDdiPhoton_sherpa_13TeV_KK1_NED4_MS3000_MGG750-2000.root","analyze/hggMass_varBinning",findXs("sherpa",13,3000,"750-2000"),100000]
+info3000sherpahigh_13TeV = ["ADDdiPhoton_sherpa_13TeV_KK1_NED4_MS3000_MGG2000-ms.root","analyze/hggMass_varBinning",findXs("sherpa",13,3000,"2000-ms"),100000]
+info3000sherpa_13TeV = [info3000sherpalow_13TeV,info3000sherpamid_13TeV,info3000sherpahigh_13TeV]
+hist3000sherpa_13TeV_varBinning = dc.concatenate(info3000sherpa_13TeV,"hist3000sherpa_13TeV_varBinning",LUMI)
+
+info4000sherpalow_8TeV = ["ADDdiPhoton_sherpa_8TeV_KK1_NED4_MS4000_MGG200-750.root","analyze/hggMass_varBinning",findXs("sherpa",8,4000,"200-750"),100000]
+info4000sherpamid_8TeV = ["ADDdiPhoton_sherpa_8TeV_KK1_NED4_MS4000_MGG750-2000.root","analyze/hggMass_varBinning",findXs("sherpa",8,4000,"750-2000"),100000]
+info4000sherpahigh_8TeV = ["ADDdiPhoton_sherpa_8TeV_KK1_NED4_MS4000_MGG2000-ms.root","analyze/hggMass_varBinning",findXs("sherpa",8,4000,"2000-ms"),100000]
+info4000sherpa_8TeV = [info4000sherpalow_8TeV,info4000sherpamid_8TeV,info4000sherpahigh_8TeV]
+hist4000sherpa_8TeV_varBinning = dc.concatenate(info4000sherpa_8TeV,"hist4000sherpa_8TeV_varBinning",LUMI)
+
+info4000sherpalow_13TeV = ["ADDdiPhoton_sherpa_13TeV_KK1_NED4_MS4000_MGG200-750.root","analyze/hggMass_varBinning",findXs("sherpa",13,4000,"200-750"),100000]
+info4000sherpamid_13TeV = ["ADDdiPhoton_sherpa_13TeV_KK1_NED4_MS4000_MGG750-2000.root","analyze/hggMass_varBinning",findXs("sherpa",13,4000,"750-2000"),100000]
+info4000sherpahigh_13TeV = ["ADDdiPhoton_sherpa_13TeV_KK1_NED4_MS4000_MGG2000-ms.root","analyze/hggMass_varBinning",findXs("sherpa",13,4000,"2000-ms"),100000]
+info4000sherpa_13TeV = [info4000sherpalow_13TeV,info4000sherpamid_13TeV,info4000sherpahigh_13TeV]
+hist4000sherpa_13TeV_varBinning = dc.concatenate(info4000sherpa_13TeV,"hist4000sherpa_13TeV_varBinning",LUMI)
+
+info100000sherpalow_8TeV = ["ADDdiPhoton_sherpa_8TeV_KK1_NED4_MS100000_MGG200-750.root","analyze/hggMass_varBinning",findXs("sherpa",8,100000,"200-750"),100000]
+info100000sherpamid_8TeV = ["ADDdiPhoton_sherpa_8TeV_KK1_NED4_MS100000_MGG750-2000.root","analyze/hggMass_varBinning",findXs("sherpa",8,100000,"750-2000"),100000]
+info100000sherpahigh_8TeV = ["ADDdiPhoton_sherpa_8TeV_KK1_NED4_MS100000_MGG2000-ms.root","analyze/hggMass_varBinning",findXs("sherpa",8,100000,"2000-ms"),100000]
+info100000sherpa_8TeV = [info100000sherpalow_8TeV,info100000sherpamid_8TeV,info100000sherpahigh_8TeV]
+hist100000sherpa_8TeV_varBinning = dc.concatenate(info100000sherpa_8TeV,"hist100000sherpa_8TeV_varBinning",LUMI)
+
+info100000sherpalow_13TeV = ["ADDdiPhoton_sherpa_13TeV_KK1_NED4_MS100000_MGG200-750.root","analyze/hggMass_varBinning",findXs("sherpa",13,100000,"200-750"),100000]
+info100000sherpamid_13TeV = ["ADDdiPhoton_sherpa_13TeV_KK1_NED4_MS100000_MGG750-2000.root","analyze/hggMass_varBinning",findXs("sherpa",13,100000,"750-2000"),100000]
+info100000sherpahigh_13TeV = ["ADDdiPhoton_sherpa_13TeV_KK1_NED4_MS100000_MGG2000-ms.root","analyze/hggMass_varBinning",findXs("sherpa",13,100000,"2000-ms"),100000]
+info100000sherpa_13TeV = [info100000sherpalow_13TeV,info100000sherpamid_13TeV,info100000sherpahigh_13TeV]
+hist100000sherpa_13TeV_varBinning = dc.concatenate(info100000sherpa_13TeV,"hist100000sherpa_13TeV_varBinning",LUMI)
+
+sighist2500p8_8TeV_varBinning = subtractHistos(hist2500p8_8TeV_varBinning,hist100000p8_8TeV_varBinning)
+sighist2500p8_13TeV_varBinning = subtractHistos(hist2500p8_13TeV_varBinning,hist100000p8_13TeV_varBinning)
+
+sighist3000p8_8TeV_varBinning = subtractHistos(hist3000p8_8TeV_varBinning,hist100000p8_8TeV_varBinning)
+sighist3000p8_13TeV_varBinning = subtractHistos(hist3000p8_13TeV_varBinning,hist100000p8_13TeV_varBinning)
+
+sighist4000p8_8TeV_varBinning = subtractHistos(hist4000p8_8TeV_varBinning,hist100000p8_8TeV_varBinning)
+sighist4000p8_13TeV_varBinning = subtractHistos(hist4000p8_13TeV_varBinning,hist100000p8_13TeV_varBinning)
+
+sighist2500sherpa_8TeV_varBinning = subtractHistos(hist2500sherpa_8TeV_varBinning,hist100000sherpa_8TeV_varBinning)
+sighist2500sherpa_13TeV_varBinning = subtractHistos(hist2500sherpa_13TeV_varBinning,hist100000sherpa_13TeV_varBinning)
+
+sighist3000sherpa_8TeV_varBinning = subtractHistos(hist3000sherpa_8TeV_varBinning,hist100000sherpa_8TeV_varBinning)
+sighist3000sherpa_13TeV_varBinning = subtractHistos(hist3000sherpa_13TeV_varBinning,hist100000sherpa_13TeV_varBinning)
+
+sighist4000sherpa_8TeV_varBinning = subtractHistos(hist4000sherpa_8TeV_varBinning,hist100000sherpa_8TeV_varBinning)
+sighist4000sherpa_13TeV_varBinning = subtractHistos(hist4000sherpa_13TeV_varBinning,hist100000sherpa_13TeV_varBinning)
+print "now creating signal root file!"
+rootFile = TFile("ADDHistos.root","recreate")
+rootFile.cd()
+sighist2500p8_13TeV.Write()
+sighist3000p8_13TeV.Write()
+sighist4000p8_13TeV.Write()
+sighist2500sherpa_13TeV.Write()
+sighist3000sherpa_13TeV.Write()
+sighist4000sherpa_13TeV.Write()
+hist100000p8_13TeV.Write()
+hist100000sherpa_13TeV.Write()
+
+# write var binning histos
+
+sighist2500p8_13TeV_varBinning.Write()
+sighist3000p8_13TeV_varBinning.Write()
+sighist4000p8_13TeV_varBinning.Write()
+sighist2500sherpa_13TeV_varBinning.Write()
+sighist3000sherpa_13TeV_varBinning.Write()
+sighist4000sherpa_13TeV_varBinning.Write()
+hist100000p8_13TeV_varBinning.Write()
+hist100000sherpa_13TeV_varBinning.Write()
+rootFile.Close()
+
+
+
 

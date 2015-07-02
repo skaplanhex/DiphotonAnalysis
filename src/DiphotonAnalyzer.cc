@@ -75,6 +75,7 @@ class DiphotonAnalyzer : public edm::EDAnalyzer {
 
       TH1D* hNumPhotons;
       TH1D* hggMass;
+      TH1D* hggMass_varBinning;
       TH1D* hleadingPhoPt;
       TH1D* hleadingPhoEta;
       TH1D* hleadingPhoPhi;
@@ -280,6 +281,7 @@ DiphotonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetu
         TLorentzVector total = leadingPhoton + subleadingPhoton; // I think this works
         double ggmass = total.M();
         hggMass->Fill( ggmass );
+        hggMass_varBinning->Fill( ggmass );
 
         leadingPt_mgg->Fill(ggmass,leadingPhotonPt);
         subleadingPt_mgg->Fill(ggmass,subleadingPhotonPt);
@@ -318,6 +320,18 @@ DiphotonAnalyzer::beginJob()
 {
     hNumPhotons = fs->make<TH1D>("hNumPhotons","Photon Multiplicity (|#eta|<1.4442)",11,-0.5,10.5);
     hggMass = fs->make<TH1D>("hggMass","",172,0,8600.);
+
+    // variable binning
+
+    // 0-640.0 GeV
+    // 640-1130.0 GeV
+    // 1130-1810.0 GeV
+    // 1810-2610.0 GeV
+    // 2610-3510.0 GeV
+    // >3510 GeV 
+    Double_t bins[7] = {0.,650.,1150.,1800.,2600.,3500.,13000.};
+    hggMass_varBinning = fs->make<TH1D>("hggMass_varBinning","",6,bins);
+
     hggDPhi = fs->make<TH1D>("hggDPhi","",300,-3.141593,3.141593);
     hleadingPhoPt = fs->make<TH1D>("hleadingPhoPt","Leading Photon pT",1800.,0,1800.);
     hleadingPhoEta = fs->make<TH1D>("hleadingPhoEta","Leading Photon #eta",100,-1.5,1.5);

@@ -1,7 +1,7 @@
 # This module takes distributions that are binned, reweights them, adds them together, and returns the result.  
 
 from ROOT import *
-
+from numpy import array
 
 # info is a list of lists, where the lists contain the following information in this order:
 # [
@@ -30,12 +30,15 @@ def concatenate(info,finalHistoName,lumi):
     tempHist = tempFile.Get(histoLocations[0])
 
     nBins = tempHist.GetNbinsX()
-    lowEdge = tempHist.GetBinLowEdge(1)
-    upperEdge = tempHist.GetBinLowEdge( nBins + 1 )
+    # lowEdge = tempHist.GetBinLowEdge(1)
+    # upperEdge = tempHist.GetBinLowEdge( nBins + 1 )
+    binBorders = []
+    for i in range( 1,nBins + 2 ): # last i in loop is the overflow bin
+        binBorders.append( tempHist.GetBinLowEdge(i) )
 
     tempFile.Close()
-
-    finalHisto = TH1D( finalHistoName, "", nBins, lowEdge, upperEdge )
+    binBorders = array(binBorders)
+    finalHisto = TH1D( finalHistoName, "", len(binBorders)-1, binBorders )
     for binNum,bin in enumerate(info):
         tempFile = TFile( fileNames[binNum], "read" )
         histo = tempFile.Get( histoLocations[binNum] )
@@ -45,5 +48,4 @@ def concatenate(info,finalHistoName,lumi):
         histo.Scale( (xs/nevents)*lumi )
         finalHisto.Add(histo,1.)
     return finalHisto
-
         

@@ -1,10 +1,10 @@
 # need a condor jdl file and shell script for each cfi file
 
-for ms in (3000,4000,100000):
-    for m in ("200-750","750-2000","2000-lt"):
+for ms in (2500,3000,4000,100000):
+    for m in ("200-750","750-2000","2000-ms"):
         for sqrts in (8,13):
-            # cfiName = "ADDdiPhoton_sherpa_%iTeV_KK1_NED4_MS%i_MGG%s_cfi"%(sqrts,ms,m)
-            cfiName = "ADDdiPhoton_%iTeV_LambdaT%i_mHat%s_cfi"%(sqrts,ms,m)
+            cfiName = "ADDdiPhoton_sherpa_%iTeV_KK1_NED4_MS%i_MGG%s_cfi"%(sqrts,ms,m)
+            # cfiName = "ADDdiPhoton_%iTeV_LambdaT%i_mHat%s_cfi"%(sqrts,ms,m)
             jdlTemplate = open("condorjdltemplate",'r')
             processName = cfiName[:-4]
             print "Now creating " + processName+".jdl"
