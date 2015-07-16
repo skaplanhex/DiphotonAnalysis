@@ -1,11 +1,11 @@
 universe = vanilla
 Should_Transfer_Files = YES
 WhenToTransferOutput = ON_EXIT
-Notification = Complete
+Notification = never
 x509userproxy = $ENV(X509_USER_PROXY)
 Executable = runDiphotonAnalyzer.sh
 should_transfer_files = YES
-transfer_input_files = /uscms_data/d3/skaplan/diphotons/p8sherpacomparison/CMSSW_7_2_4/src/Analyzers/DiphotonAnalyzer/diphotonanalyzer_cfg.py
+transfer_input_files = /uscms_data/d3/skaplan/diphotons/eventgen/CMSSW_7_2_4/src/Analyzers/DiphotonAnalyzer/diphotonanalyzer_cfg.py
 Output = /uscms/home/skaplan/condor/SKFILL.stdout
 Error = /uscms/home/skaplan/condor/SKFILL.stderr
 Log = /uscms/home/skaplan/condor/SKFILL.condor
