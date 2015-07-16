@@ -1,14 +1,14 @@
 import os
 
-for lt in (2500,3000,4000,100000):
+for lt in (2500,3000,3500,4000,4500,5000,5500,6000,100000):
     for p in ("200-750","750-2000","2000-lt"):
             # if lt == 2000 and p == "500-Inf":
             #     continue
         folder="LambdaT%i_mHat%s/"%(lt,p)
         # folder = "pTHat%s/"%p
         # eospath = "/eos/uscms/store/user/skaplan/noreplica/LambdaTStudy/"
-        eospath = '/eos/uscms/store/user/skaplan/noreplica/p8sherpacomparison/pythia8/13TeV/'
-        shortpath = "/store/user/skaplan/noreplica/p8sherpacomparison/pythia8/13TeV/"
+        eospath = '/eos/uscms/store/user/skaplan/noreplica/ADDdiPhoton/Pythia8/'
+        shortpath = "/store/user/skaplan/noreplica/ADDdiPhoton/Pythia8/"
         fullpath = eospath+folder
         outfiles = os.listdir(fullpath)
         outfilesnew=[]
