@@ -39,6 +39,11 @@ options.register('subleadingPtCut',
                  VarParsing.varType.float,
                  "subleading photon pt cut"
 )
+options.register('makeTree',
+                False,
+                VarParsing.multiplicity.singleton,
+                VarParsing.varType.bool,
+                "whether or not to include a tree in the output file")
 ## 'maxEvents' is already registered by the Framework, changing default value
 options.setDefault('maxEvents', -1)
 
@@ -96,7 +101,8 @@ process.analyze = cms.EDAnalyzer('DiphotonAnalyzer',
   leptonMode = cms.bool(options.leptonMode),
   leadingPtCut = cms.double(options.leadingPtCut),
   subleadingPtCut = cms.double(options.subleadingPtCut),
-  eventSource = cms.string(options.inputCfi) 
+  makeTree = cms.bool(options.makeTree),
+  eventSource = cms.string(options.inputCfi)
 )
 
 #the path tells cmsRun which modules to be run in which order. In our case, we just need to run the analyzer

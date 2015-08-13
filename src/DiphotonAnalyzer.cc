@@ -42,6 +42,7 @@
 #include <vector>
 #include "TLorentzVector.h"
 #include "TH2D.h"
+#include "TTree.h"
 //
 // class declaration
 //
@@ -103,6 +104,7 @@ class DiphotonAnalyzer : public edm::EDAnalyzer {
       TH2D* dPhigg_mgg;
 
       bool leptonMode;
+      bool makeTree;
       double leadingPtCut;
       double subleadingPtCut;
       int  numElectrons = 0;
@@ -112,6 +114,14 @@ class DiphotonAnalyzer : public edm::EDAnalyzer {
       int numEventsPassingCuts = 0;
 
       std::string eventSource;
+
+      // tree stuff
+      TTree* tree;
+      std::vector<double> PhotonPt;
+      std::vector<double> PhotonEta;
+      std::vector<double> PhotonPhi;
+      std::vector<double> PhotonEnergy;
+      Double_t massHolder;
 };
 
 //
@@ -134,6 +144,7 @@ DiphotonAnalyzer::DiphotonAnalyzer(const edm::ParameterSet& iConfig)
   leadingPtCut = iConfig.getParameter<double>("leadingPtCut");
   subleadingPtCut = iConfig.getParameter<double>("subleadingPtCut");
   eventSource = iConfig.getParameter<std::string>("eventSource");
+  makeTree = iConfig.getParameter<bool>("makeTree");
   std::cout << "eventSource: " << eventSource << std::endl;
 
 }
@@ -289,6 +300,29 @@ DiphotonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetu
         dEtagg_mgg->Fill( ggmass,leadingPhoton.Eta() - subleadingPhoton.Eta() );
         dPhigg_mgg->Fill(ggmass,dPhi);
 
+        // fill the tree if option is requested
+        if( makeTree ){
+
+          PhotonPt.push_back(leadingPhotonPt);
+          PhotonPt.push_back(subleadingPhotonPt);
+          PhotonEta.push_back(leadingPhotonEta);
+          PhotonEta.push_back(subleadingPhotonEta);
+          PhotonPhi.push_back(leadingPhotonPhi);
+          PhotonPhi.push_back(subleadingPhotonPhi);
+          PhotonEnergy.push_back(leadingPhotonE);
+          PhotonEnergy.push_back(subleadingPhotonE);
+          massHolder = ggmass;
+
+          tree->Fill();
+
+          PhotonPt.clear();
+          PhotonEta.clear();
+          PhotonPhi.clear();
+          PhotonEnergy.clear();
+          massHolder = -1.;
+     
+        }
+
 
         // if (ggmass > maxMass) maxMass = ggmass;
 
@@ -356,7 +390,18 @@ DiphotonAnalyzer::beginJob()
     subleadingPt_mgg = fs->make<TH2D>("subleadingPt_mgg","",172,0,8600.,1800,0,1800.);
     dRgg_mgg = fs->make<TH2D>("dRgg_mgg","",172,0,8600.,100,0,10.);
     dEtagg_mgg = fs->make<TH2D>("dEtagg_mgg","",172,0,8600.,100,-1.5,1.5);
-    dPhigg_mgg = fs->make<TH2D>("dPhigg_mgg","",172,0,8600.,100,-3.1416,3.1416);  
+    dPhigg_mgg = fs->make<TH2D>("dPhigg_mgg","",172,0,8600.,100,-3.1416,3.1416);
+
+    //tree stuff
+    if( makeTree ){
+      tree = fs->make<TTree>("tree","tree");
+      tree->Branch("PhotonPt",&PhotonPt);
+      tree->Branch("PhotonEta",&PhotonEta);
+      tree->Branch("PhotonPhi",&PhotonPhi);
+      tree->Branch("PhotonEnergy",&PhotonEnergy);
+      tree->Branch("ggMass",&massHolder,"ggMass/D");
+    }
+    
 }
 
 // ------------ method called once each job just after ending the event loop  ------------

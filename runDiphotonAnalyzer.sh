@@ -8,4 +8,4 @@ cd /uscms_data/d3/skaplan/diphotons/eventgen/CMSSW_7_2_4/src/Analyzers/DiphotonA
 eval `scramv1 runtime -sh`
 
 cd ${_CONDOR_SCRATCH_DIR}
-cmsRun diphotonanalyzer_cfg.py inputCfi=$1 maxEvents=-1 outfilename=$2 leadingPtCut=80. subleadingPtCut=80.
+cmsRun diphotonanalyzer_cfg.py inputCfi=$1 maxEvents=-1 outfilename=$2 leadingPtCut=80. subleadingPtCut=80. makeTree=True
