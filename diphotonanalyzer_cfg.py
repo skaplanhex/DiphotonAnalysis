@@ -75,7 +75,8 @@ else:
       # replace 'myfile.root' with the source file you want to use
       fileNames = cms.untracked.vstring(
          # 'file:/uscms_data/d3/skaplan/diphotons/CMSSW_7_1_1/src/ADD_M-1200_13TeV_N4_MD2000.root'
-         'file:/uscms_data/d3/skaplan/diphotons/CMSSW_7_1_1/src/ADD_M-1200_13TeV_N2_MD2000_RUN2.root'
+         #'file:/uscms_data/d3/skaplan/diphotons/CMSSW_7_1_1/src/ADD_M-1200_13TeV_N2_MD2000_RUN2.root'
+         '/store/mc/RunIISpring15DR74/ADDGravToGG_MS-5500_NED-4_KK-1_M-1000To2000_13TeV-sherpa/MINIAODSIM/Asympt25ns_MCRUN2_74_V9-v2/80000/581A7A65-1C28-E511-8FC0-0025905A6110.root'
          # '/store/mc/Summer12_DR53X/RSGravitonToGG_kMpl01_M_1000_Tune4C_8TeV_pythia8_cff/AODSIM/PU_S10_START53_V19-v1/20000/3A864739-9D0A-E311-A554-002590A80DF0.root',
          # '/store/mc/Summer12_DR53X/RSGravitonToGG_kMpl01_M_1000_Tune4C_8TeV_pythia8_cff/AODSIM/PU_S10_START53_V19-v1/20000/3CD38A6B-C30B-E311-A996-002590A37122.root',
          # '/store/mc/Summer12_DR53X/RSGravitonToGG_kMpl01_M_1000_Tune4C_8TeV_pythia8_cff/AODSIM/PU_S10_START53_V19-v1/20000/4495277D-500B-E311-A29B-001E6739811F.root',
@@ -97,7 +98,7 @@ process.TFileService = cms.Service("TFileService",
 #add the example analyzer to the process object
 process.analyze = cms.EDAnalyzer('DiphotonAnalyzer',
 	#particles is a variable representing an InputTag (a descriptor of a certain object in the event, in this case, the genParticles).  The InputTag desired can be found by doing an edmDumpEventContent on one of the files in the dataset to see all the objects in the event.  Then, choose whatever you want to use.
-	particles = cms.InputTag("genParticles"),
+	particles = cms.InputTag("prunedGenParticles"),
   leptonMode = cms.bool(options.leptonMode),
   leadingPtCut = cms.double(options.leadingPtCut),
   subleadingPtCut = cms.double(options.subleadingPtCut),
