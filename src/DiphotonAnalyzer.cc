@@ -121,6 +121,13 @@ class DiphotonAnalyzer : public edm::EDAnalyzer {
       std::vector<double> PhotonEta;
       std::vector<double> PhotonPhi;
       std::vector<double> PhotonEnergy;
+      std::vector<int> pdgId;
+      std::vector<int> mother1;
+      std::vector<int> mother2;
+      std::vector<double> GenPt;
+      std::vector<double> GenEta;
+      std::vector<double> GenPhi;
+      std::vector<double> GenEnergy;
       Double_t massHolder;
 };
 
@@ -198,8 +205,8 @@ DiphotonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetu
 
     for (reco::GenParticleCollection::const_iterator iParticle = particles->begin(); iParticle != particles->end(); ++iParticle){
 
-        int pdgId = abs( iParticle->pdgId() );
-        if ( !isActualDecayProduct(pdgId) ) continue;
+        int pdgIdNum = iParticle->pdgId();
+        // if ( !isActualDecayProduct(pdgId) ) continue;
         // if ( pdgId != 22 ) continue;
         double pt = iParticle->pt();
         double eta = iParticle->eta();
@@ -207,7 +214,7 @@ DiphotonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetu
         double energy = iParticle->energy();
         int status = iParticle->status();
 
-        if (status == 1){
+        if (status == 1 && pdgIdNum==22){
           allPhotonPt->Fill(pt);
           allPhotonEta->Fill(eta);
           allPhotonPhi->Fill(phi);
@@ -216,11 +223,20 @@ DiphotonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetu
         //eta, pt, and status cuts
         if (status != 1) continue;
 
+        // record all status 1 genparticles
+        pdgId.push_back(pdgIdNum);
+        // mother1.push_back();
+        // mother2.push_back();
+        GenPt.push_back(pt);
+        GenEta.push_back(eta);
+        GenPhi.push_back(phi);
+        GenEnergy.push_back(energy);
+
         numFinalState++;
 
-        if (pdgId==22) numPhotons++;
-        else if (pdgId==11) numElectrons++;
-        else if (pdgId==13) numMuons++;
+        if (pdgIdNum==22) numPhotons++;
+        // else if (pdgId==11) numElectrons++;
+        // else if (pdgId==13) numMuons++;
 
         if (pt > leadingPhotonPt){
             //if we found a new leading photon, then the new subleading is the previous leading
@@ -265,8 +281,8 @@ DiphotonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetu
 
     }
 
-    bool passedAllCuts = ( numFinalState >= 2 && (leadingPhotonPt > leadingPtCut) && (subleadingPhotonPt > subleadingPtCut) && (fabs(leadingPhotonEta) < 1.4442) && (fabs(subleadingPhotonEta) < 1.4442) );
-
+    // bool passedAllCuts = ( numFinalState >= 2 && (leadingPhotonPt > leadingPtCut) && (subleadingPhotonPt > subleadingPtCut) && (fabs(leadingPhotonEta) < 1.4442) && (fabs(subleadingPhotonEta) < 1.4442) );
+    bool passedAllCuts = true; // no cuts for now, do offline
     if( passedAllCuts ){
 
         numEventsPassingCuts++;
@@ -319,6 +335,13 @@ DiphotonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetu
           PhotonEta.clear();
           PhotonPhi.clear();
           PhotonEnergy.clear();
+          pdgId.clear();
+          // mother1.clear();
+          // mother2.clear();
+          GenPt.clear();
+          GenEta.clear();
+          GenPhi.clear();
+          GenEnergy.clear();
           massHolder = -1.;
      
         }
@@ -399,6 +422,13 @@ DiphotonAnalyzer::beginJob()
       tree->Branch("PhotonEta",&PhotonEta);
       tree->Branch("PhotonPhi",&PhotonPhi);
       tree->Branch("PhotonEnergy",&PhotonEnergy);
+      tree->Branch("pdgId",&pdgId);
+      // tree->Branch("mother1",&mother1);
+      // tree->Branch("mother2",&mother2);
+      tree->Branch("GenPt",&GenPt);
+      tree->Branch("GenEta",&GenEta);
+      tree->Branch("GenPhi",&GenPhi);
+      tree->Branch("GenEnergy",&GenEnergy);
       tree->Branch("ggMass",&massHolder,"ggMass/D");
     }
     
