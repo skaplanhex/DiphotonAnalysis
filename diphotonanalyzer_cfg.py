@@ -75,7 +75,8 @@ else:
       # replace 'myfile.root' with the source file you want to use
       fileNames = cms.untracked.vstring(
          # 'file:/uscms_data/d3/skaplan/diphotons/CMSSW_7_1_1/src/ADD_M-1200_13TeV_N4_MD2000.root'
-         'file:/uscms_data/d3/skaplan/diphotons/CMSSW_7_1_1/src/ADD_M-1200_13TeV_N2_MD2000_RUN2.root'
+         #'file:/uscms_data/d3/skaplan/diphotons/CMSSW_7_1_1/src/ADD_M-1200_13TeV_N2_MD2000_RUN2.root'
+         'root://cmsxrootd.fnal.gov//store/mc/RunIIFall15DR76/GGJets_M-1000To2000_Pt-50_13TeV-sherpa/AODSIM/PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/10000/0814B407-5ED8-E511-9DAB-0CC47A78A414.root'
          # '/store/mc/Summer12_DR53X/RSGravitonToGG_kMpl01_M_1000_Tune4C_8TeV_pythia8_cff/AODSIM/PU_S10_START53_V19-v1/20000/3A864739-9D0A-E311-A554-002590A80DF0.root',
          # '/store/mc/Summer12_DR53X/RSGravitonToGG_kMpl01_M_1000_Tune4C_8TeV_pythia8_cff/AODSIM/PU_S10_START53_V19-v1/20000/3CD38A6B-C30B-E311-A996-002590A37122.root',
          # '/store/mc/Summer12_DR53X/RSGravitonToGG_kMpl01_M_1000_Tune4C_8TeV_pythia8_cff/AODSIM/PU_S10_START53_V19-v1/20000/4495277D-500B-E311-A29B-001E6739811F.root',

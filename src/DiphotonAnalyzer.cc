@@ -73,7 +73,8 @@ class DiphotonAnalyzer : public edm::EDAnalyzer {
       edm::Handle< reco::GenParticleCollection > particles;
       //this object represents the InputTag that is passed to the analyzer in the config file
       edm::InputTag particles_;
-
+      edm::EDGetToken particlesToken_;
+     
       TH1D* hNumPhotons;
       TH1D* hggMass;
       TH1D* hggMass_varBinning;
@@ -147,6 +148,7 @@ DiphotonAnalyzer::DiphotonAnalyzer(const edm::ParameterSet& iConfig)
 {
   //This line looks at the paramater set that is passed to the analyzer via the config file.  The particles_ object will represent whatever is passed to the particles variable in the config file (in our case, the genParticles).
   particles_ = iConfig.getParameter<edm::InputTag>("particles");
+  particlesToken_ = mayConsume<reco::GenParticleCollection>(particles_);
   leptonMode = ( iConfig.exists("leptonMode") ? iConfig.getParameter<bool>("leptonMode") : false );
   leadingPtCut = iConfig.getParameter<double>("leadingPtCut");
   subleadingPtCut = iConfig.getParameter<double>("subleadingPtCut");
@@ -188,7 +190,7 @@ DiphotonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetu
     // bool isSpecialEvent = (event == 191 || event == 265 || event == 348 || event == 641 || event == 771 || event == 952);
     // if ( !isSpecialEvent ) return;
     //particles_ is the InputTag object.  Look at the constructor for how it was initialized.  This line says to look in the event for the object with the InputTag that particles_ represents (in our case, the genParticles) and copy the content to the particles edm::Handle.  We can then do whatever we want with the particles!
-    iEvent.getByLabel(particles_,particles);
+    iEvent.getByToken(particlesToken_,particles);
 
     double leadingPhotonPt = -1.;
     double leadingPhotonEta = -1.;
