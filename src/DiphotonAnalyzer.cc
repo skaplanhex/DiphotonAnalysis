@@ -86,6 +86,9 @@ class DiphotonAnalyzer : public edm::EDAnalyzer {
       TH1D* hsubleadingPhoPhi;
       TH1D* hggDPhi;
 
+      TH1D* hNEvents;
+      TH1D* hNEventsPassingCuts;
+
       TH1D* allPhotonPt;
       TH1D* allPhotonEta;
       TH1D* allPhotonPhi;
@@ -129,6 +132,8 @@ class DiphotonAnalyzer : public edm::EDAnalyzer {
       std::vector<double> GenEta;
       std::vector<double> GenPhi;
       std::vector<double> GenEnergy;
+      std::vector<int> fromHardProcessFinalState;
+      std::vector<int> isPromptFinalState;
       Double_t massHolder;
 };
 
@@ -216,31 +221,11 @@ DiphotonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetu
         double energy = iParticle->energy();
         int status = iParticle->status();
 
-        if (status == 1 && pdgIdNum==22){
-          allPhotonPt->Fill(pt);
-          allPhotonEta->Fill(eta);
-          allPhotonPhi->Fill(phi);
-        }
+        // if (pdgIdNum==22 && iParticle->fromHardProcessFinalState())
+        //   cout << "photon fromHardProcessFinalState (pt,eta,phi,energy) = (" << pt << ", " << eta << ", " << phi << ", " << energy << ")" << endl;
 
-        //eta, pt, and status cuts
-        if (status != 1) continue;
-
-        // record all status 1 genparticles
-        pdgId.push_back(pdgIdNum);
-        // mother1.push_back();
-        // mother2.push_back();
-        GenPt.push_back(pt);
-        GenEta.push_back(eta);
-        GenPhi.push_back(phi);
-        GenEnergy.push_back(energy);
-
-        numFinalState++;
-
-        if (pdgIdNum==22) numPhotons++;
-        // else if (pdgId==11) numElectrons++;
-        // else if (pdgId==13) numMuons++;
-
-        if (pt > leadingPhotonPt){
+        if (pdgIdNum==22 && iParticle->isHardProcess()){
+          if (pt > leadingPhotonPt){
             //if we found a new leading photon, then the new subleading is the previous leading
             // cout << "Found new leading photon!" << endl;
             // cout << "SUBLEADING PHOTON: Replacing " << subleadingPhotonPt << " with " << leadingPhotonPt << endl;
@@ -255,8 +240,8 @@ DiphotonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetu
             leadingPhotonEta = eta;
             leadingPhotonPhi = phi;
             leadingPhotonE = energy;
-        }
-        else if ( (pt < leadingPhotonPt) && (pt > subleadingPhotonPt) ){
+          }
+          else if ( (pt <= leadingPhotonPt) && (pt > subleadingPhotonPt) ){ // <= to cover the case that the pTs are equal, which I did see
             //found a new subleading photon, keep leading photon as is but change the subleading to the new photon
             // cout << "Found new subleading photon!" << endl;
             // cout << "SUBLEADING PHOTON: Replacing " << subleadingPhotonPt << " with " << pt << endl;
@@ -265,7 +250,41 @@ DiphotonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetu
             subleadingPhotonPhi = phi;
             subleadingPhotonE = energy;
 
+          }
+          cout << "photon isHardProcess (pt,eta,phi,energy) = (" << pt << ", " << eta << ", " << phi << ", " << energy << ")" << endl;
+          
+        } // end block on isPhoton&&isHardProcess
+        if (pdgIdNum==22 && iParticle->fromHardProcessFinalState())
+          cout << "photon fromHardProcessFinalState (pt,eta,phi,energy) = (" << pt << ", " << eta << ", " << phi << ", " << energy << ")" << endl;
+        if (pdgIdNum==22 && iParticle->isPromptFinalState())
+          cout << "photon isPromptFinalState (pt,eta,phi,energy) = (" << pt << ", " << eta << ", " << phi << ", " << energy << ")" << endl;
+
+        if (status == 1 && pdgIdNum==22){
+          allPhotonPt->Fill(pt);
+          allPhotonEta->Fill(eta);
+          allPhotonPhi->Fill(phi);
         }
+
+        //eta and status cut
+        if (status != 1) continue;
+        if (fabs(eta)>3.) continue;
+
+        // record all status 1 genparticles
+        pdgId.push_back(pdgIdNum);
+        // mother1.push_back();
+        // mother2.push_back();
+        GenPt.push_back(pt);
+        GenEta.push_back(eta);
+        GenPhi.push_back(phi);
+        GenEnergy.push_back(energy);
+        fromHardProcessFinalState.push_back(iParticle->fromHardProcessFinalState());
+        isPromptFinalState.push_back(iParticle->isPromptFinalState());
+
+        numFinalState++;
+
+        if (pdgIdNum==22) numPhotons++;
+        // else if (pdgId==11) numElectrons++;
+        // else if (pdgId==13) numMuons++;
 
     } //end particle loop
 
@@ -284,7 +303,8 @@ DiphotonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetu
     }
 
     // bool passedAllCuts = ( numFinalState >= 2 && (leadingPhotonPt > leadingPtCut) && (subleadingPhotonPt > subleadingPtCut) && (fabs(leadingPhotonEta) < 1.4442) && (fabs(subleadingPhotonEta) < 1.4442) );
-    bool passedAllCuts = true; // no cuts for now, do offline
+    // bool passedAllCuts = true; // no cuts for now, do offline
+    bool passedAllCuts = (fabs(leadingPhotonEta)<=2.5) && (fabs(subleadingPhotonEta)<=2.5);
     if( passedAllCuts ){
 
         numEventsPassingCuts++;
@@ -344,6 +364,8 @@ DiphotonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetu
           GenEta.clear();
           GenPhi.clear();
           GenEnergy.clear();
+          fromHardProcessFinalState.clear();
+          isPromptFinalState.clear();
           massHolder = -1.;
      
         }
@@ -368,7 +390,8 @@ DiphotonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetu
         //   cout << "-------------------------------------" << endl;
 
         // } //end if ggMass < 200 block
-    } //end if numPhotons >=2 block
+    } //end passedAllCuts block
+    else cout << "event didn't pass eta cuts" << endl;
 
 }
 
@@ -398,6 +421,9 @@ DiphotonAnalyzer::beginJob()
     hsubleadingPhoPt = fs->make<TH1D>("hsubleadingPhoPt","Subleading Photon pT",1800.,0,1800.);
     hsubleadingPhoEta = fs->make<TH1D>("hsubleadingPhoEta","Subleading Photon #eta",100,-1.5,1.5);
     hsubleadingPhoPhi = fs->make<TH1D>("hsubleadingPhoPhi","Subleading Photon #varphi",100,-3.1416,3.1416);
+
+    hNEvents = fs->make<TH1D>("hNEvents","",1,-0.5,0.5);
+    hNEventsPassingCuts = fs->make<TH1D>("hNEventsPassingCuts","",1,-0.5,0.5);
 
     hleadingPhoPt_beforecuts = fs->make<TH1D>("hleadingPhoPt_beforecuts","Leading Photon pT",1800.,0,1800.);
     hleadingPhoEta_beforecuts = fs->make<TH1D>("hleadingPhoEta_beforecuts","Leading Photon #eta",400,-6.,6.);
@@ -431,6 +457,8 @@ DiphotonAnalyzer::beginJob()
       tree->Branch("GenEta",&GenEta);
       tree->Branch("GenPhi",&GenPhi);
       tree->Branch("GenEnergy",&GenEnergy);
+      tree->Branch("FromHardProcessFinalState",&fromHardProcessFinalState);
+      tree->Branch("IsPromptFinalState",&isPromptFinalState);
       tree->Branch("ggMass",&massHolder,"ggMass/D");
     }
     
@@ -449,6 +477,9 @@ DiphotonAnalyzer::endJob()
     std::cout << "Number of Total Events: " << numTotalEvents << std::endl;
     std::cout << "--> Cut Efficiency = " << (1.0*numEventsPassingCuts)/(1.0*numTotalEvents) << std::endl;
     // std::cout << "Largest diphoton invariant mass: " << maxMass << std::endl;
+
+    hNEvents->SetBinContent(1,1.*numTotalEvents);
+    hNEventsPassingCuts->SetBinContent(1,1.*numEventsPassingCuts);
 }
 
 // ------------ method called when starting to processes a run  ------------
