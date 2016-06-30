@@ -251,13 +251,13 @@ DiphotonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetu
             subleadingPhotonE = energy;
 
           }
-          cout << "photon isHardProcess (pt,eta,phi,energy) = (" << pt << ", " << eta << ", " << phi << ", " << energy << ")" << endl;
+          //cout << "photon isHardProcess (pt,eta,phi,energy) = (" << pt << ", " << eta << ", " << phi << ", " << energy << ")" << endl;
           
         } // end block on isPhoton&&isHardProcess
-        if (pdgIdNum==22 && iParticle->fromHardProcessFinalState())
-          cout << "photon fromHardProcessFinalState (pt,eta,phi,energy) = (" << pt << ", " << eta << ", " << phi << ", " << energy << ")" << endl;
-        if (pdgIdNum==22 && iParticle->isPromptFinalState())
-          cout << "photon isPromptFinalState (pt,eta,phi,energy) = (" << pt << ", " << eta << ", " << phi << ", " << energy << ")" << endl;
+        //if (pdgIdNum==22 && iParticle->fromHardProcessFinalState())
+	//cout << "photon fromHardProcessFinalState (pt,eta,phi,energy) = (" << pt << ", " << eta << ", " << phi << ", " << energy << ")" << endl;
+        //if (pdgIdNum==22 && iParticle->isPromptFinalState())
+	//cout << "photon isPromptFinalState (pt,eta,phi,energy) = (" << pt << ", " << eta << ", " << phi << ", " << energy << ")" << endl;
 
         if (status == 1 && pdgIdNum==22){
           allPhotonPt->Fill(pt);

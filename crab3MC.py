@@ -12,7 +12,7 @@ config.JobType.pluginName = 'Analysis'
 config.section_('Data')
 config.Data.inputDataset = '/QCD_Pt_20_30_EMEnriched_TuneZ2star_8TeV_pythia6/Summer12_DR53X-PU_S10_START53_V7A-v1/AODSIM'
 config.Data.outputDatasetTag = ''
-config.Data.outLFNDirBase = '/store/user/skaplan/noreplica/sherpafordiphox/'
+config.Data.outLFNDirBase = '/store/group/phys_exotica/diphoton/GGJetsGenNtuplesWithFlags'
 config.Data.publication = False
 config.Data.unitsPerJob = 100000
 config.Data.totalUnits = -1
@@ -20,7 +20,7 @@ config.Data.splitting = 'EventAwareLumiBased'
 #config.Data.lumiMask = 'JSON/SilverJSON2015/Cert_13TeV_16Dec2015ReReco_Collisions15_25ns_JSON_Silver_v2.txt'
 config.section_('User')
 config.section_('Site')
-config.Site.storageSite = 'T3_US_FNALLPC'
+config.Site.storageSite = 'T2_CH_CERN'
 
 
 if __name__ == '__main__':
