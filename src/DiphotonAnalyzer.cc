@@ -39,6 +39,8 @@
 //for the GenParticleCollection and GenParticles
 #include "DataFormats/HepMCCandidate/interface/GenParticle.h"
 #include "DataFormats/HepMCCandidate/interface/GenParticleFwd.h"
+//for GenEventInfoProduct
+#include "SimDataFormats/GeneratorProducts/interface/GenEventInfoProduct.h"
 #include <vector>
 #include "TLorentzVector.h"
 #include "TH2D.h"
@@ -74,6 +76,7 @@ class DiphotonAnalyzer : public edm::EDAnalyzer {
       //this object represents the InputTag that is passed to the analyzer in the config file
       edm::InputTag particles_;
       edm::EDGetToken particlesToken_;
+      edm::EDGetToken genEventInfoProductToken_;
      
       TH1D* hNumPhotons;
       TH1D* hggMass;
@@ -135,6 +138,7 @@ class DiphotonAnalyzer : public edm::EDAnalyzer {
       std::vector<int> fromHardProcessFinalState;
       std::vector<int> isPromptFinalState;
       Double_t massHolder;
+      Double_t eventWeight;
 };
 
 //
@@ -154,6 +158,7 @@ DiphotonAnalyzer::DiphotonAnalyzer(const edm::ParameterSet& iConfig)
   //This line looks at the paramater set that is passed to the analyzer via the config file.  The particles_ object will represent whatever is passed to the particles variable in the config file (in our case, the genParticles).
   particles_ = iConfig.getParameter<edm::InputTag>("particles");
   particlesToken_ = mayConsume<reco::GenParticleCollection>(particles_);
+  genEventInfoProductToken_ = mayConsume<GenEventInfoProduct>(edm::InputTag("generator"));
   leptonMode = ( iConfig.exists("leptonMode") ? iConfig.getParameter<bool>("leptonMode") : false );
   leadingPtCut = iConfig.getParameter<double>("leadingPtCut");
   subleadingPtCut = iConfig.getParameter<double>("subleadingPtCut");
@@ -196,6 +201,12 @@ DiphotonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetu
     // if ( !isSpecialEvent ) return;
     //particles_ is the InputTag object.  Look at the constructor for how it was initialized.  This line says to look in the event for the object with the InputTag that particles_ represents (in our case, the genParticles) and copy the content to the particles edm::Handle.  We can then do whatever we want with the particles!
     iEvent.getByToken(particlesToken_,particles);
+
+    edm::Handle<GenEventInfoProduct> genInfoHandle;
+    iEvent.getByToken(genEventInfoProductToken_,genInfoHandle);
+
+    // get event weight;
+    eventWeight = genInfoHandle->weight();
 
     double leadingPhotonPt = -1.;
     double leadingPhotonEta = -1.;
@@ -367,6 +378,7 @@ DiphotonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetu
           fromHardProcessFinalState.clear();
           isPromptFinalState.clear();
           massHolder = -1.;
+          eventWeight = -1.;
      
         }
 
@@ -460,6 +472,7 @@ DiphotonAnalyzer::beginJob()
       tree->Branch("FromHardProcessFinalState",&fromHardProcessFinalState);
       tree->Branch("IsPromptFinalState",&isPromptFinalState);
       tree->Branch("ggMass",&massHolder,"ggMass/D");
+      tree->Branch("EventWeight",&eventWeight,"EventWeight/D");
     }
     
 }
