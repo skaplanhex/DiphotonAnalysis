@@ -44,6 +44,11 @@ options.register('makeTree',
                 VarParsing.multiplicity.singleton,
                 VarParsing.varType.bool,
                 "whether or not to include a tree in the output file")
+options.register('useAOD',
+                True,
+                VarParsing.multiplicity.singleton,
+                VarParsing.varType.bool,
+                "running over AOD?")
 ## 'maxEvents' is already registered by the Framework, changing default value
 options.setDefault('maxEvents', -1)
 
@@ -77,6 +82,7 @@ else:
          # 'file:/uscms_data/d3/skaplan/diphotons/CMSSW_7_1_1/src/ADD_M-1200_13TeV_N4_MD2000.root'
          #'file:/uscms_data/d3/skaplan/diphotons/CMSSW_7_1_1/src/ADD_M-1200_13TeV_N2_MD2000_RUN2.root'
          'root://cmsxrootd.fnal.gov//store/mc/RunIIFall15DR76/GGJets_M-1000To2000_Pt-50_13TeV-sherpa/AODSIM/PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/10000/0814B407-5ED8-E511-9DAB-0CC47A78A414.root'
+         # 'root://cmsxrootd.fnal.gov//store/mc/RunIIFall15MiniAODv2/GGJets_M-4000To6000_Pt-50_13TeV-sherpa/MINIAODSIM/PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/40000/30EA0953-91D8-E511-8F65-0025907B4F64.root'
          # '/store/mc/Summer12_DR53X/RSGravitonToGG_kMpl01_M_1000_Tune4C_8TeV_pythia8_cff/AODSIM/PU_S10_START53_V19-v1/20000/3A864739-9D0A-E311-A554-002590A80DF0.root',
          # '/store/mc/Summer12_DR53X/RSGravitonToGG_kMpl01_M_1000_Tune4C_8TeV_pythia8_cff/AODSIM/PU_S10_START53_V19-v1/20000/3CD38A6B-C30B-E311-A996-002590A37122.root',
          # '/store/mc/Summer12_DR53X/RSGravitonToGG_kMpl01_M_1000_Tune4C_8TeV_pythia8_cff/AODSIM/PU_S10_START53_V19-v1/20000/4495277D-500B-E311-A29B-001E6739811F.root',
@@ -95,15 +101,27 @@ process.source.duplicateCheckMode = cms.untracked.string('noDuplicateCheck')
 process.TFileService = cms.Service("TFileService",
       fileName = cms.string(options.outfilename)
 )
+
+useAOD = options.useAOD
+st = "AOD"
+particleCollection = "genParticles"
+if not useAOD:
+  st = "MiniAOD"
+  particleCollection = "prunedGenParticles"
+
+print "#######################"
+print "# Running over %s"%st
+print "#######################"
 #add the example analyzer to the process object
 process.analyze = cms.EDAnalyzer('DiphotonAnalyzer',
 	#particles is a variable representing an InputTag (a descriptor of a certain object in the event, in this case, the genParticles).  The InputTag desired can be found by doing an edmDumpEventContent on one of the files in the dataset to see all the objects in the event.  Then, choose whatever you want to use.
-	particles = cms.InputTag("genParticles"),
+	particles = cms.InputTag(particleCollection),
   leptonMode = cms.bool(options.leptonMode),
   leadingPtCut = cms.double(options.leadingPtCut),
   subleadingPtCut = cms.double(options.subleadingPtCut),
   makeTree = cms.bool(options.makeTree),
-  eventSource = cms.string(options.inputCfi)
+  eventSource = cms.string(options.inputCfi),
+  useAOD = cms.bool(useAOD)
 )
 
 #the path tells cmsRun which modules to be run in which order. In our case, we just need to run the analyzer

@@ -39,12 +39,14 @@
 //for the GenParticleCollection and GenParticles
 #include "DataFormats/HepMCCandidate/interface/GenParticle.h"
 #include "DataFormats/HepMCCandidate/interface/GenParticleFwd.h"
+#include "DataFormats/PatCandidates/interface/PackedGenParticle.h"
 //for GenEventInfoProduct
 #include "SimDataFormats/GeneratorProducts/interface/GenEventInfoProduct.h"
 #include <vector>
 #include "TLorentzVector.h"
 #include "TH2D.h"
 #include "TTree.h"
+
 //
 // class declaration
 //
@@ -76,6 +78,7 @@ class DiphotonAnalyzer : public edm::EDAnalyzer {
       //this object represents the InputTag that is passed to the analyzer in the config file
       edm::InputTag particles_;
       edm::EDGetToken particlesToken_;
+      edm::EDGetToken packedParticlesToken_;
       edm::EDGetToken genEventInfoProductToken_;
      
       TH1D* hNumPhotons;
@@ -103,6 +106,8 @@ class DiphotonAnalyzer : public edm::EDAnalyzer {
       TH1D* hsubleadingPhoEta_beforecuts;
       TH1D* hsubleadingPhoPhi_beforecuts;
 
+      TH1D* hNumHardProcess;
+
       TH2D* subleadingPt_leadingPt;
       TH2D* leadingPt_mgg;
       TH2D* subleadingPt_mgg;
@@ -112,6 +117,7 @@ class DiphotonAnalyzer : public edm::EDAnalyzer {
 
       bool leptonMode;
       bool makeTree;
+      bool useAOD;
       double leadingPtCut;
       double subleadingPtCut;
       int  numElectrons = 0;
@@ -158,12 +164,14 @@ DiphotonAnalyzer::DiphotonAnalyzer(const edm::ParameterSet& iConfig)
   //This line looks at the paramater set that is passed to the analyzer via the config file.  The particles_ object will represent whatever is passed to the particles variable in the config file (in our case, the genParticles).
   particles_ = iConfig.getParameter<edm::InputTag>("particles");
   particlesToken_ = mayConsume<reco::GenParticleCollection>(particles_);
+  packedParticlesToken_ = mayConsume<edm::View<pat::PackedGenParticle>>(edm::InputTag("packedGenParticles"));
   genEventInfoProductToken_ = mayConsume<GenEventInfoProduct>(edm::InputTag("generator"));
   leptonMode = ( iConfig.exists("leptonMode") ? iConfig.getParameter<bool>("leptonMode") : false );
   leadingPtCut = iConfig.getParameter<double>("leadingPtCut");
   subleadingPtCut = iConfig.getParameter<double>("subleadingPtCut");
   eventSource = iConfig.getParameter<std::string>("eventSource");
   makeTree = iConfig.getParameter<bool>("makeTree");
+  useAOD = iConfig.getParameter<bool>("useAOD");
   std::cout << "eventSource: " << eventSource << std::endl;
 
 }
@@ -218,6 +226,7 @@ DiphotonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetu
     double subleadingPhotonE = -2.;
     int    numPhotons = 0;
     int    numFinalState = 0;
+    int    numHardProcessPhotons = 0;
 
     numTotalEvents++;
 
@@ -232,10 +241,13 @@ DiphotonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetu
         double energy = iParticle->energy();
         int status = iParticle->status();
 
+        // if (iParticle->collisionId() != 0) cout << "NONZERO COLLISION ID (pdgid,collisionId): " << pdgIdNum << ", " << iParticle->collisionId() << endl;
+
         // if (pdgIdNum==22 && iParticle->fromHardProcessFinalState())
         //   cout << "photon fromHardProcessFinalState (pt,eta,phi,energy) = (" << pt << ", " << eta << ", " << phi << ", " << energy << ")" << endl;
 
         if (pdgIdNum==22 && iParticle->isHardProcess()){
+          numHardProcessPhotons++;
           if (pt > leadingPhotonPt){
             //if we found a new leading photon, then the new subleading is the previous leading
             // cout << "Found new leading photon!" << endl;
@@ -262,7 +274,7 @@ DiphotonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetu
             subleadingPhotonE = energy;
 
           }
-          //cout << "photon isHardProcess (pt,eta,phi,energy) = (" << pt << ", " << eta << ", " << phi << ", " << energy << ")" << endl;
+          // cout << "photon isHardProcess (pt,eta,phi,energy, collisionID) = (" << pt << ", " << eta << ", " << phi << ", " << energy <<  ", " << iParticle->collisionId()<< ")" << endl;
           
         } // end block on isPhoton&&isHardProcess
         //if (pdgIdNum==22 && iParticle->fromHardProcessFinalState())
@@ -270,11 +282,61 @@ DiphotonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetu
         //if (pdgIdNum==22 && iParticle->isPromptFinalState())
 	//cout << "photon isPromptFinalState (pt,eta,phi,energy) = (" << pt << ", " << eta << ", " << phi << ", " << energy << ")" << endl;
 
+        if (useAOD){
+          if (status == 1 && pdgIdNum==22){
+            allPhotonPt->Fill(pt);
+            allPhotonEta->Fill(eta);
+            allPhotonPhi->Fill(phi);
+          }
+        // if (pdgIdNum==22 && iParticle->fromHardProcessFinalState())
+        //   cout << "photon fromHardProcessFinalState (pt,eta,phi,energy,collisionId) = (" << pt << ", " << eta << ", " << phi << ", " << energy << ", "<< iParticle->collisionId() << ")" << endl;
+        // if (pdgIdNum==22 && iParticle->isPromptFinalState())
+        //   cout << "photon isPromptFinalState (pt,eta,phi,energy,collisionId) = (" << pt << ", " << eta << ", " << phi << ", " << energy << ", "<< iParticle->collisionId() << ")" << endl;
+          //eta and status cut
+          if (status != 1) continue;
+          if (fabs(eta)>3.) continue;
+
+          // record all status 1 genparticles
+          pdgId.push_back(pdgIdNum);
+          // mother1.push_back();
+          // mother2.push_back();
+          GenPt.push_back(pt);
+          GenEta.push_back(eta);
+          GenPhi.push_back(phi);
+          GenEnergy.push_back(energy);
+          fromHardProcessFinalState.push_back(iParticle->fromHardProcessFinalState());
+          isPromptFinalState.push_back(iParticle->isPromptFinalState());
+
+          numFinalState++;
+
+          if (pdgIdNum==22) numPhotons++;
+          // else if (pdgId==11) numElectrons++;
+          // else if (pdgId==13) numMuons++;
+        }
+
+    } //end particle loop
+    hNumHardProcess->Fill(numHardProcessPhotons);
+
+    if (!useAOD){
+      edm::Handle<edm::View<pat::PackedGenParticle>> packedGenParticles;
+      iEvent.getByToken(packedParticlesToken_,packedGenParticles);
+      for(edm::View<pat::PackedGenParticle>::const_iterator iParticle = packedGenParticles->begin(); iParticle != packedGenParticles->end(); ++iParticle){
+        int pdgIdNum = iParticle->pdgId();
+        double pt = iParticle->pt();
+        double eta = iParticle->eta();
+        double phi = iParticle->phi();
+        double energy = iParticle->energy();
+        int status = iParticle->status();
         if (status == 1 && pdgIdNum==22){
           allPhotonPt->Fill(pt);
           allPhotonEta->Fill(eta);
           allPhotonPhi->Fill(phi);
         }
+
+        // if (pdgIdNum==22 && iParticle->fromHardProcessFinalState())
+        //   cout << "photon fromHardProcessFinalState (pt,eta,phi,energy) = (" << pt << ", " << eta << ", " << phi << ", " << energy << ")" << endl;
+        // if (pdgIdNum==22 && iParticle->isPromptFinalState())
+        //   cout << "photon isPromptFinalState (pt,eta,phi,energy) = (" << pt << ", " << eta << ", " << phi << ", " << energy << ")" << endl;
 
         //eta and status cut
         if (status != 1) continue;
@@ -297,7 +359,8 @@ DiphotonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetu
         // else if (pdgId==11) numElectrons++;
         // else if (pdgId==13) numMuons++;
 
-    } //end particle loop
+      }
+    }
 
     hNumPhotons->Fill(numPhotons);
 
@@ -454,6 +517,7 @@ DiphotonAnalyzer::beginJob()
     dRgg_mgg = fs->make<TH2D>("dRgg_mgg","",172,0,8600.,100,0,10.);
     dEtagg_mgg = fs->make<TH2D>("dEtagg_mgg","",172,0,8600.,100,-1.5,1.5);
     dPhigg_mgg = fs->make<TH2D>("dPhigg_mgg","",172,0,8600.,100,-3.1416,3.1416);
+    hNumHardProcess = fs->make<TH1D>("hNumHardProcess","hNumHardProcess",11,-0.5,10.5);
 
     //tree stuff
     if( makeTree ){
