@@ -94,6 +94,8 @@ class DiphotonAnalyzer : public edm::EDAnalyzer {
 
       TH1D* hNEvents;
       TH1D* hNEventsPassingCuts;
+      TH1D* hNumWeightedEvents;
+      TH1D* hEventWeights;
 
       TH1D* allPhotonPt;
       TH1D* allPhotonEta;
@@ -215,6 +217,8 @@ DiphotonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetu
 
     // get event weight;
     eventWeight = genInfoHandle->weight();
+    hEventWeights->Fill(eventWeight);
+    hNumWeightedEvents->Fill(0.,eventWeight);
 
     double leadingPhotonPt = -1.;
     double leadingPhotonEta = -1.;
@@ -499,6 +503,8 @@ DiphotonAnalyzer::beginJob()
 
     hNEvents = fs->make<TH1D>("hNEvents","",1,-0.5,0.5);
     hNEventsPassingCuts = fs->make<TH1D>("hNEventsPassingCuts","",1,-0.5,0.5);
+    hNumWeightedEvents = fs->make<TH1D>("hNumWeightedEvents","",1,-0.5,0.5);
+    hEventWeights = fs->make<TH1D>("hEventWeights","",101,-0.005,1.005);
 
     hleadingPhoPt_beforecuts = fs->make<TH1D>("hleadingPhoPt_beforecuts","Leading Photon pT",1800.,0,1800.);
     hleadingPhoEta_beforecuts = fs->make<TH1D>("hleadingPhoEta_beforecuts","Leading Photon #eta",400,-6.,6.);
